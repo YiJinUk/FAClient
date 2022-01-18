@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{44F2F009-4C1D-C688-AA4A-32870D5BCEC1}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "FAClient",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}

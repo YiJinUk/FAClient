@@ -1,0 +1,11 @@
+/Saved
+/PLClient.sln
+/.vs
+/DerivedDataCache
+/Documents
+/Intermediate
+*.sln
+*_BuiltData.uassat
+/Binaries
+/Build
+/Logs
