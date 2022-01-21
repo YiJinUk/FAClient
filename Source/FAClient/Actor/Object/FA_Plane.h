@@ -16,4 +16,6 @@ class FACLIENT_API AFA_Plane : public AFA_Object
 {
 	GENERATED_BODY()
 	
+protected:
+	AFA_Plane();
 };

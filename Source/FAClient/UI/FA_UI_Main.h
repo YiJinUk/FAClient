@@ -16,6 +16,8 @@ class FACLIENT_API UFA_UI_Main : public UFA_UI_Master
 {
 	GENERATED_BODY()
 	
+public:
+	void UIMainInit();
 private:
 	/*
 	* index 0 : empty
@@ -24,4 +26,8 @@ private:
 	*/
 	UPROPERTY(Meta = (BindWidget))
 		UWidgetSwitcher* _switcher = nullptr;
+
+public:
+	void UIMainGameRestart();
+	void UIMainGameOver();
 };

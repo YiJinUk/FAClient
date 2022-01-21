@@ -17,4 +17,16 @@ void AFA_PC::PCInit(AFA_GM* fagm)
 	PCBPInit();
 
 	_ui_main = PCCreateWidgetMain();
+	_ui_main->UIMainInit();
+}
+
+void AFA_PC::PCGameRestart()
+{
+	_fagm->GameRestart();
+	_ui_main->UIMainGameRestart();
+}
+
+void AFA_PC::PCGameOver()
+{
+	_ui_main->UIMainGameOver();
 }

@@ -27,7 +27,14 @@ private:
 		AFA_GM* _fagm = nullptr;
 #pragma endregion
 
+#pragma region Game
+public:
+	void PCGameRestart();
+#pragma endregion
+
 #pragma region UI
+public:
+	void PCGameOver();
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
 		void PCBPInit();

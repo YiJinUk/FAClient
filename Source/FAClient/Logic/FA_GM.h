@@ -49,16 +49,29 @@ private:
 		AFA_Manager_Pool* _manager_pool = nullptr;
 #pragma endregion
 
-#pragma region Stage
+#pragma region Game,Stage
+public:
+	void GameRestart();
 private:
+	//플레이어캐릭터 위치의 X값 입니다
 	UPROPERTY()
-		FVector2D _pre_spawn_plane_loc = FVector2D::ZeroVector;
+		int32 _pre_spawn_plane_loc_x = 0;
+	UPROPERTY()
+		FInfoGame _info_game;
 #pragma endregion
 
 #pragma region Plane
 private:
+	void PlaneInitLocation();
+private:
 	UPROPERTY()
 		TArray<AFA_Plane*> _spawn_planes;
+	//옮겨야할 바닥 인덱스
+	UPROPERTY()
+		int32 _plane_index_move = -1;
+	//바닥이 옮겨진 횟수
+	UPROPERTY()
+		int32 _plane_move_count = -1;
 #pragma endregion
 
 #pragma region Player
@@ -71,6 +84,9 @@ private:
 		AFA_PC* _pc = nullptr;
 	UPROPERTY()
 		AFA_Player* _player = nullptr;
+
+	UPROPERTY()
+		FVector _player_base_location = FVector::ZeroVector;
 #pragma endregion
 
 };

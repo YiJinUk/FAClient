@@ -3,3 +3,7 @@
 
 #include "Actor/Object/FA_Plane.h"
 
+AFA_Plane::AFA_Plane()
+{
+	PrimaryActorTick.bCanEverTick = false;
+}

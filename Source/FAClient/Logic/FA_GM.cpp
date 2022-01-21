@@ -57,13 +57,17 @@ void AFA_GM::GMInit()
 
 	_manager_pool->PoolInit(_fagi);
 
-	/*바닥타일 초기화*/
-	for (int32 i = 0, i_len = _data_game_cache->GetStartPlaneCount(); i < i_len; ++i)
+	/*바닥 초기화*/
+	for (int32 i = 0, i_len = _data_game_cache->GetPlaneBaseSpawnCount(); i < i_len; ++i)
 	{
 		AFA_Plane* plane = _manager_pool->PoolGetPlaneByCode("PLANE00001");
-		plane->SetActorLocation(FVector(_data_game_cache->GetPlaneLength() * _spawn_planes.Num() + 1, 0.f, 0.f));
 		_spawn_planes.Add(plane);
 	}
+	PlaneInitLocation();
+
+	/*플레이어 초기화*/
+	_player_base_location = _player->GetActorLocation();
+	_pre_spawn_plane_loc_x = _player_base_location.X;
 
 	/*플레이어컨트롤러 초기화*/
 	_pc->PCInit(this);
@@ -73,14 +77,46 @@ void AFA_GM::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (UFA_FunctionLibrary::GetDistanceByV2(_pre_spawn_plane_loc, _player->GetActorLocation2D()) >= 5000.f)
+	if (_info_game.game_status == EGameStatus::PLAY)
 	{
-		_pre_spawn_plane_loc = _player->GetActorLocation2D();
+		/*바닥 생성 검사*/
+		if (_player->GetActorLocation().X - _pre_spawn_plane_loc_x >= _data_game_cache->GetPlaneLength())
+		{
+			++_plane_move_count;
+			++_plane_index_move;
 
-		AFA_Plane* plane = _manager_pool->PoolGetPlaneByCode("PLANE00001");
-		plane->SetActorLocation(FVector(_data_game_cache->GetPlaneLength() * _spawn_planes.Num() + 1, 0.f, 0.f));
-		_spawn_planes.Add(plane);
+			/*바닥 생성*/
+			_pre_spawn_plane_loc_x = _player->GetActorLocation().X;
+
+			if (_plane_index_move >= _data_game_cache->GetPlaneBaseSpawnCount())
+				_plane_index_move = 0;
+
+			_spawn_planes[_plane_index_move]->SetActorLocation(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f));
+		}
+
+		if (_player->PlayerGetSpeed() <= 0)
+		{
+			//GameOver
+			_info_game.game_status = EGameStatus::GAMEOVER;
+			_pc->PCGameOver();
+		}
 	}
+}
+
+void AFA_GM::GameRestart()
+{
+	/*플레이어 캐릭터 초기화*/
+	_player->PlayerMovementSetActive(false);
+	_player->SetActorLocation(_player_base_location);
+
+	/*바닥 풀링*/
+	PlaneInitLocation();
+
+	/*변수 초기화*/
+	_plane_index_move = -1;
+	_plane_move_count = -1;
+	_pre_spawn_plane_loc_x = _player_base_location.X;
+	_info_game.game_status = EGameStatus::TITLE;
 }
 
 void AFA_GM::ShotPlayer()
@@ -88,4 +124,16 @@ void AFA_GM::ShotPlayer()
 	_player->PlayerMovementSetActive(true);
 	_player->PlayerSetSpeed(5000);
 	_player->PlayerSetVelocity(FVector(3000, 0, 1000));
+
+	_info_game.game_status = EGameStatus::PLAY;
+}
+
+void AFA_GM::PlaneInitLocation()
+{
+	_plane_index_move = -1;
+	for (AFA_Plane* plane : _spawn_planes)
+	{
+		plane->SetActorLocation(FVector(_data_game_cache->GetPlaneLength() * ++_plane_index_move, 0.f, 0.f));
+	}
+	_plane_index_move = -1;
 }

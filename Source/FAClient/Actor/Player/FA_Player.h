@@ -23,6 +23,9 @@ protected:
 public:
 	void PlayerPostInit();
 protected:
+	UPROPERTY(EditAnywhere)
+		class USphereComponent* _sphere_collision = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly) 
 		UProjectileMovementComponent* _projectile_movement = nullptr;
 #pragma endregion
@@ -32,6 +35,8 @@ public:
 	void PlayerMovementSetActive(const bool b_is_active);
 	void PlayerSetSpeed(const int32 i_speed);
 	void PlayerSetVelocity(const FVector v_velocity);
+
+	const int32 PlayerGetSpeed();
 #pragma endregion
 
 };

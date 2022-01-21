@@ -20,23 +20,28 @@ class FACLIENT_API UFA_SharedStruct : public UObject
 	
 };
 
+
+UENUM()
+enum class EGameStatus : uint8
+{
+	TITLE, // 게임시작전 UI화면 입니다
+	PLAY, // 웨이브중
+	CLEAR, // 웨이브클리어
+	GAMEOVER, // 게임오버
+};
+
 USTRUCT(BlueprintType)
 struct FDataGame : public FTableRowBase
 {
 	GENERATED_BODY()
-protected:
-	UPROPERTY(EditAnywhere, Category = "Stage")
-		int32 _start_plane_count = 3;
-	UPROPERTY(EditAnywhere, Category = "Stage")
-		int32 _spawn_plane_distance = 5000;
-	
+protected:	
+	UPROPERTY(EditAnywhere, Category = "Plane")
+		int32 _plane_base_spawn_count = 5;
 	UPROPERTY(EditAnywhere, Category = "Plane")
 		int32 _plane_length = 5000;
 
 public:
-	FORCEINLINE const int32 GetStartPlaneCount() const { return _start_plane_count; }
-	FORCEINLINE const int32 GetSpawnPlaneDistance() const { return _spawn_plane_distance; }
-
+	FORCEINLINE const int32 GetPlaneBaseSpawnCount() const { return _plane_base_spawn_count; }
 	FORCEINLINE const int32 GetPlaneLength() const { return _plane_length; }
 };
 
@@ -50,4 +55,14 @@ protected:
 
 public:
 	FORCEINLINE const TSubclassOf<AFA_Plane>& GetClassPlane() const { return _class_plane; }
+};
+
+USTRUCT(BlueprintType)
+struct FInfoGame
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+		EGameStatus game_status = EGameStatus::TITLE;
 };
