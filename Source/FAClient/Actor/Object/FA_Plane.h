@@ -6,7 +6,7 @@
 #include "Actor/Object/FA_Object.h"
 #include "FA_Plane.generated.h"
 
-class AFA_Plane;
+class AFA_Object;
 
 /**
  * 
@@ -18,4 +18,11 @@ class FACLIENT_API AFA_Plane : public AFA_Object
 	
 protected:
 	AFA_Plane();
+
+protected:
+	UPROPERTY(EditAnywhere)
+		class USceneComponent* _spawn_object_location = nullptr;
+
+public:
+	void PlaneInit(const FVector v_loc, AFA_Object* object_spawn);
 };

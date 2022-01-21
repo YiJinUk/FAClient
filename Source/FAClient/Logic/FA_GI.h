@@ -23,6 +23,7 @@ public:
 #pragma region DataFind,Get
 public:
 	FDataPlane* FindDataPlaneByCode(const FString& str_code_plane);
+	FDataObject* FindDataObjectByCode(const FString& str_code_object);
 
 	FDataGame* GetDataGame();
 private:
@@ -30,7 +31,15 @@ private:
 		UDataTable* _dt_game = nullptr;
 	UPROPERTY()
 		UDataTable* _dt_plane = nullptr;
+	UPROPERTY()
+		UDataTable* _dt_object = nullptr;
 
 	FDataGame* _data_game = nullptr;
+#pragma endregion
+
+#pragma region Math
+public:
+	int32 GetRandomByInt(const int32 i_min, const int32 i_max);
+	bool IsPassProbByInt(const int32 i_goal);
 #pragma endregion
 };

@@ -9,6 +9,7 @@
 #include "FA_SharedStruct.generated.h"
 
 class AFA_Plane;
+class AFA_Object;
 
 /**
  * 
@@ -30,19 +31,43 @@ enum class EGameStatus : uint8
 	GAMEOVER, // 게임오버
 };
 
+UENUM()
+enum class EObjectType : uint8
+{
+	TRAP,
+};
+
+
 USTRUCT(BlueprintType)
 struct FDataGame : public FTableRowBase
 {
 	GENERATED_BODY()
 protected:	
+	UPROPERTY(EditAnywhere, Category = "Player")
+		float _player_gravity = 0.5f;
+
 	UPROPERTY(EditAnywhere, Category = "Plane")
 		int32 _plane_base_spawn_count = 5;
 	UPROPERTY(EditAnywhere, Category = "Plane")
 		int32 _plane_length = 5000;
 
+	UPROPERTY(EditAnywhere, Category = "Object")
+		int32 _object_prob_obstacle = 50;
+	UPROPERTY(EditAnywhere, Category = "Object")
+		int32 _object_prob_chance = 50;
+
+	UPROPERTY(EditAnywhere, Category = "Obstacle")
+		float _obstacle_trap_add_speed = 0.f;
 public:
+	FORCEINLINE const float GetPlayerGravity() const { return _player_gravity; }
+
 	FORCEINLINE const int32 GetPlaneBaseSpawnCount() const { return _plane_base_spawn_count; }
 	FORCEINLINE const int32 GetPlaneLength() const { return _plane_length; }
+
+	FORCEINLINE const int32 GetObjectProbObstacle() const { return _object_prob_obstacle; }
+	FORCEINLINE const int32 GetObjectProbChance() const { return _object_prob_chance; }
+
+	FORCEINLINE const float GetObstacleTrapAddSpeed() const { return _obstacle_trap_add_speed; }
 };
 
 USTRUCT(BlueprintType)
@@ -58,6 +83,24 @@ public:
 };
 
 USTRUCT(BlueprintType)
+struct FDataObject : public FTableRowBase
+{
+	GENERATED_BODY()
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
+		TSubclassOf<AFA_Object> _class_object;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
+		FString _code = "0";
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
+		bool _is_obstacle = false;
+public:
+	FORCEINLINE const TSubclassOf<AFA_Object>& GetClassObject() const { return _class_object; }
+	FORCEINLINE const FString GetCode() const { return _code; }
+	FORCEINLINE const bool GetIsObstacle() const { return _is_obstacle; }
+};
+
+
+USTRUCT(BlueprintType)
 struct FInfoGame
 {
 	GENERATED_BODY()
@@ -65,4 +108,14 @@ struct FInfoGame
 public:
 	UPROPERTY()
 		EGameStatus game_status = EGameStatus::TITLE;
+};
+
+USTRUCT(BlueprintType)
+struct FInfoObject
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+		FString code = "0";
 };

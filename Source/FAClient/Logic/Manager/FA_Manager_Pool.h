@@ -6,8 +6,9 @@
 #include "Logic/Manager/FA_Manager_Master.h"
 #include "FA_Manager_Pool.generated.h"
 
-class AFA_Plane;
 class UFA_GI;
+class AFA_Plane;
+class AFA_Object;
 
 /**
  * 
@@ -21,10 +22,13 @@ public:
 
 public:
 	AFA_Plane* PoolGetPlaneByCode(const FString& str_code_plane);
+	AFA_Object* PoolGetObjectByCode(const FString& str_code_object);
 public:
 	void PoolInPlane(AFA_Plane* plane);
+	void PoolInObject(AFA_Object* object);
 private:
 	AFA_Plane* PoolOutPlane(const FString& str_code_plane);
+	AFA_Object* PoolOutObject(const FString& str_code_object);
 
 private:
 	UPROPERTY()
@@ -33,4 +37,5 @@ private:
 	FActorSpawnParameters _spawn_param = FActorSpawnParameters();
 
 	TMap<FString, TArray<AFA_Plane*>> _pool_plane;
+	TMap<FString, TArray<AFA_Object*>> _pool_object;
 };

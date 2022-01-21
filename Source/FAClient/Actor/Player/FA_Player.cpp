@@ -2,6 +2,7 @@
 
 
 #include "Actor/Player/FA_Player.h"
+#include "Logic/FA_GI.h"
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -27,6 +28,8 @@ AFA_Player::AFA_Player()
 void AFA_Player::PlayerPostInit()
 {
 	PlayerMovementSetActive(false);
+
+	_fagi = GetWorld()->GetGameInstance<UFA_GI>();
 }
 
 void AFA_Player::PlayerMovementSetActive(const bool b_is_active)
@@ -34,22 +37,25 @@ void AFA_Player::PlayerMovementSetActive(const bool b_is_active)
 	if (b_is_active)
 	{
 		_projectile_movement->SetUpdatedComponent(GetRootComponent());
-		_projectile_movement->ProjectileGravityScale = 1.f;
+		_projectile_movement->ProjectileGravityScale = _fagi->GetDataGame()->GetPlayerGravity();
 	}
 	else
 	{
 		_projectile_movement->ProjectileGravityScale = 0.f;
 	}
 }
-
 void AFA_Player::PlayerSetSpeed(const int32 i_speed)
 {
 	_projectile_movement->MaxSpeed = i_speed;
 }
-
-void AFA_Player::PlayerSetVelocity(const FVector v_velocity)
+void AFA_Player::PlayerSetVelocity(const FVector& v_velocity)
 {
 	_projectile_movement->SetVelocityInLocalSpace(v_velocity);
+}
+void AFA_Player::PlayerAddSpeed(const float f_speed)
+{
+	const FVector& v_velocity = _projectile_movement->Velocity;
+	_projectile_movement->SetVelocityInLocalSpace(FVector(v_velocity.X * f_speed, 0.f, v_velocity.Z));
 }
 
 const int32 AFA_Player::PlayerGetSpeed() { return _projectile_movement->Velocity.Size(); }

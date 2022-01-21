@@ -8,6 +8,7 @@
 #include "Manager/FA_Manager_Pool.h"
 #include "Actor/Player/FA_Player.h"
 #include "Actor/Object/FA_Plane.h"
+#include "Actor/Object/FA_Object.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -91,7 +92,9 @@ void AFA_GM::Tick(float DeltaTime)
 			if (_plane_index_move >= _data_game_cache->GetPlaneBaseSpawnCount())
 				_plane_index_move = 0;
 
-			_spawn_planes[_plane_index_move]->SetActorLocation(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f));
+			//_spawn_planes[_plane_index_move]->SetActorLocation(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f));
+			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
+			_spawn_planes[_plane_index_move]->PlaneInit(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
 		}
 
 		if (_player->PlayerGetSpeed() <= 0)
@@ -126,6 +129,25 @@ void AFA_GM::ShotPlayer()
 	_player->PlayerSetVelocity(FVector(3000, 0, 1000));
 
 	_info_game.game_status = EGameStatus::PLAY;
+}
+
+void AFA_GM::ObjectOverlap(const EObjectType e_obj_type)
+{
+	switch (e_obj_type)
+	{
+	case EObjectType::TRAP:
+		_player->PlayerAddSpeed(_data_game_cache->GetObstacleTrapAddSpeed());
+		break;
+	default:
+		break;
+	}
+}
+
+const FString AFA_GM::CalcSpawnObjectCode()
+{
+	//_fagi->IsPassProbByInt()
+	//return FString();
+	return "OBJ00001";
 }
 
 void AFA_GM::PlaneInitLocation()

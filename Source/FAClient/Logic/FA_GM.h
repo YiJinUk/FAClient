@@ -12,6 +12,7 @@ class AFA_PC;
 class AFA_Player;
 class AFA_Manager_Pool;
 class AFA_Plane;
+class AFA_Object;
 
 /**
  * 
@@ -72,6 +73,17 @@ private:
 	//¹Ù´ÚÀÌ ¿Å°ÜÁø È½¼ö
 	UPROPERTY()
 		int32 _plane_move_count = -1;
+#pragma endregion
+
+#pragma region Object
+public:
+	void ObjectOverlap(const EObjectType e_obj_type);
+
+private:
+	const FString CalcSpawnObjectCode();
+private:
+	UPROPERTY()
+		TArray<AFA_Object*> _spawn_object;
 #pragma endregion
 
 #pragma region Player

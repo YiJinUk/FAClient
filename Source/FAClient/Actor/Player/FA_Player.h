@@ -7,6 +7,7 @@
 #include "FA_Player.generated.h"
 
 class UProjectileMovementComponent;
+class UFA_GI;
 
 /**
  * 
@@ -28,13 +29,17 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly) 
 		UProjectileMovementComponent* _projectile_movement = nullptr;
+
+	UPROPERTY()
+		UFA_GI* _fagi = nullptr;
 #pragma endregion
 
 #pragma region Movement
 public:
 	void PlayerMovementSetActive(const bool b_is_active);
 	void PlayerSetSpeed(const int32 i_speed);
-	void PlayerSetVelocity(const FVector v_velocity);
+	void PlayerSetVelocity(const FVector& v_velocity);
+	void PlayerAddSpeed(const float f_speed);
 
 	const int32 PlayerGetSpeed();
 #pragma endregion
