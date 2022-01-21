@@ -3,25 +3,12 @@
 
 #include "Actor/FA_Actor.h"
 
-// Sets default values
 AFA_Actor::AFA_Actor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
-// Called when the game starts or when spawned
-void AFA_Actor::BeginPlay()
+FVector2D AFA_Actor::GetActorLocation2D()
 {
-	Super::BeginPlay();
-	
+	return FVector2D(GetActorLocation().X, GetActorLocation().Y);
 }
-
-// Called every frame
-void AFA_Actor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

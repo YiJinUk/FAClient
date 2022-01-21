@@ -4,16 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "FA_Actor.generated.h"
+#include "FA_Manager_Master.generated.h"
 
 UCLASS()
-class FACLIENT_API AFA_Actor : public AActor
+class FACLIENT_API AFA_Manager_Master : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	AFA_Actor();
+	AFA_Manager_Master();
 
-	FVector2D GetActorLocation2D();
 
 };
