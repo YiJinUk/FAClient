@@ -6,6 +6,7 @@
 #include "UI/FA_UI_Master.h"
 #include "FA_UI_Main.generated.h"
 
+class UFA_UI_GameStart;
 class UWidgetSwitcher;
 
 /**
@@ -26,8 +27,11 @@ private:
 	*/
 	UPROPERTY(Meta = (BindWidget))
 		UWidgetSwitcher* _switcher = nullptr;
+	UPROPERTY(Meta = (BindWidget))
+		UFA_UI_GameStart* _game_start = nullptr;
 
 public:
+	void UIMainShotStart();
 	void UIMainGameRestart();
 	void UIMainGameOver();
 };

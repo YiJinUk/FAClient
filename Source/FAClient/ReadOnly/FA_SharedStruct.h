@@ -45,6 +45,10 @@ struct FDataGame : public FTableRowBase
 protected:	
 	UPROPERTY(EditAnywhere, Category = "Player")
 		float _player_gravity = 0.5f;
+	UPROPERTY(EditAnywhere, Category = "Player")
+		FVector _player_base_angle = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, Category = "Player")
+		int32 _player_base_max_power = 10000;
 
 	UPROPERTY(EditAnywhere, Category = "Plane")
 		int32 _plane_base_spawn_count = 5;
@@ -60,6 +64,8 @@ protected:
 		float _obstacle_trap_add_speed = 0.f;
 public:
 	FORCEINLINE const float GetPlayerGravity() const { return _player_gravity; }
+	FORCEINLINE const FVector GetPlayerBaseAngle() const { return _player_base_angle; }
+	FORCEINLINE const int32 GetPlayerBaseMaxPower() const { return _player_base_max_power; }
 
 	FORCEINLINE const int32 GetPlaneBaseSpawnCount() const { return _plane_base_spawn_count; }
 	FORCEINLINE const int32 GetPlaneLength() const { return _plane_length; }

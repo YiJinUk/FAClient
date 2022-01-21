@@ -29,6 +29,7 @@ private:
 
 #pragma region Game
 public:
+	void PCShotStart();
 	void PCGameRestart();
 #pragma endregion
 

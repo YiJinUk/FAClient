@@ -20,6 +20,11 @@ void AFA_PC::PCInit(AFA_GM* fagm)
 	_ui_main->UIMainInit();
 }
 
+void AFA_PC::PCShotStart()
+{
+	_ui_main->UIMainShotStart();
+	_fagm->ShotPlayer();
+}
 void AFA_PC::PCGameRestart()
 {
 	_fagm->GameRestart();

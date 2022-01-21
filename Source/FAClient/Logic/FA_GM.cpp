@@ -78,6 +78,25 @@ void AFA_GM::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (_info_game.game_status == EGameStatus::TITLE && _power_progress)
+	{
+		if (_is_add_power_value)
+		{
+			_power_progress_value += DeltaTime;
+			if (_power_progress_value >= 1.f)
+				_is_add_power_value = false;
+		}
+		else
+		{
+			_power_progress_value -= DeltaTime;
+			if (_power_progress_value <= 0.f)
+				_is_add_power_value = true;
+		}
+		
+		
+		_power_progress->SetScalarParameterValue("Progress", _power_progress_value);
+	}
+
 	if (_info_game.game_status == EGameStatus::PLAY)
 	{
 		/*바닥 생성 검사*/
@@ -125,8 +144,8 @@ void AFA_GM::GameRestart()
 void AFA_GM::ShotPlayer()
 {
 	_player->PlayerMovementSetActive(true);
-	_player->PlayerSetSpeed(5000);
-	_player->PlayerSetVelocity(FVector(3000, 0, 1000));
+	_player->PlayerSetSpeed(_data_game_cache->GetPlayerBaseMaxPower() * _power_progress_value);
+	_player->PlayerSetVelocity(_data_game_cache->GetPlayerBaseAngle());
 
 	_info_game.game_status = EGameStatus::PLAY;
 }
@@ -159,3 +178,5 @@ void AFA_GM::PlaneInitLocation()
 	}
 	_plane_index_move = -1;
 }
+
+void AFA_GM::SetPowerProgressMaterial(UMaterialInstanceDynamic* mid_power_progress) { _power_progress = mid_power_progress; }

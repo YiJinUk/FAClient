@@ -91,6 +91,8 @@ public:
 	/*게임초반 플레이어를 날립니다*/
 	UFUNCTION(BlueprintCallable)
 		void ShotPlayer();
+
+	void SetPowerProgressMaterial(UMaterialInstanceDynamic* mid_power_progress);
 private:
 	UPROPERTY()
 		AFA_PC* _pc = nullptr;
@@ -99,6 +101,13 @@ private:
 
 	UPROPERTY()
 		FVector _player_base_location = FVector::ZeroVector;
+
+	UPROPERTY()
+		UMaterialInstanceDynamic* _power_progress = nullptr;
+	UPROPERTY()
+		float _power_progress_value = 0.f;
+	UPROPERTY()
+		bool _is_add_power_value = true;
 #pragma endregion
 
 };
