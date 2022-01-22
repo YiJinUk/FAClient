@@ -66,6 +66,22 @@ void AFA_GM::GMInit()
 	}
 	PlaneInitLocation();
 
+	/*오브젝트 생성확률 초기화*/
+	for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbObstacles())
+	{
+		for (int32 i = 0, i_len = s_data_obj_prob.GetObjectProb(); i < i_len; ++i)
+		{
+			_prob_obstacles.Add(s_data_obj_prob.GetCode());
+		}
+	}
+	for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbChances())
+	{
+		for (int32 i = 0, i_len = s_data_obj_prob.GetObjectProb(); i < i_len; ++i)
+		{
+			_prob_chances.Add(s_data_obj_prob.GetCode());
+		}
+	}
+
 	/*플레이어 초기화*/
 	_player_base_location = _player->GetActorLocation();
 	_pre_spawn_plane_loc_x = _player_base_location.X;
@@ -93,7 +109,6 @@ void AFA_GM::Tick(float DeltaTime)
 				_is_add_power_value = true;
 		}
 		
-		
 		_power_progress->SetScalarParameterValue("Progress", _power_progress_value);
 	}
 
@@ -111,9 +126,12 @@ void AFA_GM::Tick(float DeltaTime)
 			if (_plane_index_move >= _data_game_cache->GetPlaneBaseSpawnCount())
 				_plane_index_move = 0;
 
-			//_spawn_planes[_plane_index_move]->SetActorLocation(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f));
 			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
-			_spawn_planes[_plane_index_move]->PlaneInit(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
+			object_spawn->ObjectInit();
+			AFA_Plane* plane = _spawn_planes[_plane_index_move];
+			_manager_pool->PoolInObject(plane->GetSpawnObject());
+			plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
+			_spawn_objects.Add(object_spawn);
 		}
 
 		if (_player->PlayerGetSpeed() <= 0)
@@ -133,6 +151,13 @@ void AFA_GM::GameRestart()
 
 	/*바닥 풀링*/
 	PlaneInitLocation();
+
+	/*오브젝트 풀링*/
+	for (AFA_Object* object : _spawn_objects)
+	{
+		_manager_pool->PoolInObject(object);
+	}
+	_spawn_objects.Empty(50);
 
 	/*변수 초기화*/
 	_plane_index_move = -1;
@@ -157,6 +182,9 @@ void AFA_GM::ObjectOverlap(const EObjectType e_obj_type)
 	case EObjectType::TRAP:
 		_player->PlayerAddSpeed(_data_game_cache->GetObstacleTrapAddSpeed());
 		break;
+	case EObjectType::HOLE:
+		_player->PlayerAddSpeed(0.f);
+		break;
 	default:
 		break;
 	}
@@ -166,7 +194,20 @@ const FString AFA_GM::CalcSpawnObjectCode()
 {
 	//_fagi->IsPassProbByInt()
 	//return FString();
-	return "OBJ00001";
+
+	/*장애물을 설치할지 찬스를 설치할지*/
+	if (_fagi->IsPassProbByInt(_data_game_cache->GetObjectProbObstacle()))
+	{
+		/*장애물 설치*/
+		/*랜덤한 장애물의 코드를 리턴합니다*/
+		return _prob_obstacles[_fagi->GetRandomByInt(0, _prob_obstacles.Num() - 1)];
+	}
+	else
+	{
+		/*찬스 설치*/
+		/*랜덤한 찬스의 코드를 리턴합니다*/
+		return _prob_chances[_fagi->GetRandomByInt(0, _prob_chances.Num() - 1)];
+	}
 }
 
 void AFA_GM::PlaneInitLocation()
@@ -174,7 +215,7 @@ void AFA_GM::PlaneInitLocation()
 	_plane_index_move = -1;
 	for (AFA_Plane* plane : _spawn_planes)
 	{
-		plane->SetActorLocation(FVector(_data_game_cache->GetPlaneLength() * ++_plane_index_move, 0.f, 0.f));
+		plane->PlaneInit(FVector(_data_game_cache->GetPlaneLength() * ++_plane_index_move, 0.f, 0.f));
 	}
 	_plane_index_move = -1;
 }

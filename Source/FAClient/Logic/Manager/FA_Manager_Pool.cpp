@@ -27,6 +27,8 @@ void AFA_Manager_Pool::PoolInPlane(AFA_Plane* plane)
 }
 void AFA_Manager_Pool::PoolInObject(AFA_Object* object)
 {
+	if (!object) return;
+	object->ObjectSetPoolActive(false);
 	_pool_object.FindOrAdd(object->GetInfoObject().code).Add(object);
 }
 

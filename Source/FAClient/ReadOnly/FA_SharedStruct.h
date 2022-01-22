@@ -34,9 +34,25 @@ enum class EGameStatus : uint8
 UENUM()
 enum class EObjectType : uint8
 {
+	NO,
 	TRAP,
+	HOLE,
 };
 
+USTRUCT(BlueprintType)
+struct FDataObjectProb
+{
+	GENERATED_BODY()
+protected:
+	UPROPERTY(EditAnywhere, Category = "General")
+		FString _code = "0";
+	UPROPERTY(EditAnywhere, Category = "General")
+		int32 _obj_prob = 0;
+
+public:
+	FORCEINLINE const FString& GetCode() const { return _code; }
+	FORCEINLINE const int32 GetObjectProb() const { return _obj_prob; }
+};
 
 USTRUCT(BlueprintType)
 struct FDataGame : public FTableRowBase
@@ -55,10 +71,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Plane")
 		int32 _plane_length = 5000;
 
-	UPROPERTY(EditAnywhere, Category = "Object")
+	UPROPERTY(EditAnywhere, Category = "ObjectProb")
 		int32 _object_prob_obstacle = 50;
-	UPROPERTY(EditAnywhere, Category = "Object")
+	UPROPERTY(EditAnywhere, Category = "ObjectProb")
 		int32 _object_prob_chance = 50;
+	UPROPERTY(EditAnywhere, Category = "ObjectProb")
+		TArray<FDataObjectProb> _prob_obstacles;
+	UPROPERTY(EditAnywhere, Category = "ObjectProb")
+		TArray<FDataObjectProb> _prob_chances;
 
 	UPROPERTY(EditAnywhere, Category = "Obstacle")
 		float _obstacle_trap_add_speed = 0.f;
@@ -72,6 +92,8 @@ public:
 
 	FORCEINLINE const int32 GetObjectProbObstacle() const { return _object_prob_obstacle; }
 	FORCEINLINE const int32 GetObjectProbChance() const { return _object_prob_chance; }
+	FORCEINLINE const TArray<FDataObjectProb>& GetProbObstacles() const { return _prob_obstacles; }
+	FORCEINLINE const TArray<FDataObjectProb>& GetProbChances() const { return _prob_chances; }
 
 	FORCEINLINE const float GetObstacleTrapAddSpeed() const { return _obstacle_trap_add_speed; }
 };
@@ -99,10 +121,13 @@ protected:
 		FString _code = "0";
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
 		bool _is_obstacle = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
+		EObjectType _obj_type = EObjectType::NO;
 public:
 	FORCEINLINE const TSubclassOf<AFA_Object>& GetClassObject() const { return _class_object; }
 	FORCEINLINE const FString GetCode() const { return _code; }
 	FORCEINLINE const bool GetIsObstacle() const { return _is_obstacle; }
+	FORCEINLINE const EObjectType GetObjectType() const { return _obj_type; }
 };
 
 
@@ -124,4 +149,6 @@ struct FInfoObject
 public:
 	UPROPERTY()
 		FString code = "0";
+	UPROPERTY()
+		EObjectType obj_type = EObjectType::NO;
 };

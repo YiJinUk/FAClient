@@ -31,8 +31,14 @@ private:
 
 
 public:
+	/*최초 1회만 호출. 풀링할 때는 호출하지 않음*/
 	void ObjectPostInit(const FDataObject* s_data_object);
 
+	/*풀링으로 생성 시 호출*/
+	void ObjectInit();
+
+	void ObjectSetPoolActive(const bool b_is_active);
+	virtual void ObjectSetPoolActiveChild(const bool b_is_active);
 public:
 	const FInfoObject& GetInfoObject();
 private:

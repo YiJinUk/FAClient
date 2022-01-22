@@ -19,6 +19,7 @@ AFA_Object::AFA_Object()
 	{
 		_box->SetupAttachment(GetRootComponent());
 		_box->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		_box->SetGenerateOverlapEvents(false);
 	}
 }
 
@@ -31,6 +32,29 @@ void AFA_Object::BeginPlay()
 void AFA_Object::ObjectPostInit(const FDataObject* s_data_object)
 {
 	_info_object.code = s_data_object->GetCode();
+	_info_object.obj_type = s_data_object->GetObjectType();
+}
+
+void AFA_Object::ObjectInit()
+{
+	ObjectSetPoolActive(true);
+}
+
+void AFA_Object::ObjectSetPoolActive(const bool b_is_active)
+{
+	_box->SetGenerateOverlapEvents(b_is_active);
+
+	if (!b_is_active)
+	{
+		SetActorLocation(FVector(-1000.f, 0.f, 0.f));
+	}
+
+	ObjectSetPoolActiveChild(b_is_active);
+}
+
+void AFA_Object::ObjectSetPoolActiveChild(const bool b_is_active)
+{
+	//override
 }
 
 const FInfoObject& AFA_Object::GetInfoObject() { return _info_object; }

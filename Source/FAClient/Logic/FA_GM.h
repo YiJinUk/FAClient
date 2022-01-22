@@ -83,7 +83,12 @@ private:
 	const FString CalcSpawnObjectCode();
 private:
 	UPROPERTY()
-		TArray<AFA_Object*> _spawn_object;
+		TArray<AFA_Object*> _spawn_objects;
+
+	UPROPERTY()
+		TArray<FString> _prob_obstacles;
+	UPROPERTY()
+		TArray<FString> _prob_chances;
 #pragma endregion
 
 #pragma region Player

@@ -8,6 +8,7 @@
 
 class UProjectileMovementComponent;
 class UFA_GI;
+class AFA_GM;
 
 /**
  * 
@@ -32,6 +33,8 @@ protected:
 
 	UPROPERTY()
 		UFA_GI* _fagi = nullptr;
+	UPROPERTY()
+		AFA_GM* _fagm = nullptr;
 #pragma endregion
 
 #pragma region Movement
@@ -42,6 +45,9 @@ public:
 	void PlayerAddSpeed(const float f_speed);
 
 	const int32 PlayerGetSpeed();
+private:
+	//UFUNCTION()
+		//void PlayerOnBounce(const FHitResult& s_hit, const FVector& v_velocity);
 #pragma endregion
 
 };

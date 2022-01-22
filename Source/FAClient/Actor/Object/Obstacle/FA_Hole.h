@@ -4,23 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Actor/Object/Obstacle/FA_Obstacle.h"
-#include "FA_Trap.generated.h"
+#include "FA_Hole.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FACLIENT_API AFA_Trap : public AFA_Obstacle
+class FACLIENT_API AFA_Hole : public AFA_Obstacle
 {
 	GENERATED_BODY()
-
 protected:
-	AFA_Trap();
-	
+	AFA_Hole();
+
 private:
 	UFUNCTION()
 		void OnBoxOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-protected:
-	void ObjectSetPoolActiveChild(const bool b_is_active) override;
 };

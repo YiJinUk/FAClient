@@ -24,5 +24,11 @@ protected:
 		class USceneComponent* _spawn_object_location = nullptr;
 
 public:
-	void PlaneInit(const FVector v_loc, AFA_Object* object_spawn);
+	void PlaneInit(const FVector& v_loc);
+	void PlaneSpawn(const FVector& v_loc, AFA_Object* object_spawn);
+
+	AFA_Object* GetSpawnObject();
+private:
+	UPROPERTY()
+		AFA_Object* _spawn_object = nullptr;
 };

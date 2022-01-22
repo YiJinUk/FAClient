@@ -23,3 +23,8 @@ void AFA_Trap::OnBoxOverlap(class UPrimitiveComponent* OverlappedComp, class AAc
 
 	_fagm->ObjectOverlap(EObjectType::TRAP);
 }
+
+void AFA_Trap::ObjectSetPoolActiveChild(const bool b_is_active)
+{
+
+}

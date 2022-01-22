@@ -15,9 +15,19 @@ AFA_Plane::AFA_Plane()
 	}
 }
 
-void AFA_Plane::PlaneInit(const FVector v_loc, AFA_Object* object_spawn)
+void AFA_Plane::PlaneInit(const FVector& v_loc)
 {
 	SetActorLocation(v_loc);
-	object_spawn->SetActorLocation(_spawn_object_location->GetComponentLocation());
-	//object_spawn->SetActorLocation(FVector(10000.f, 0.f, 0.f));
+	_spawn_object = nullptr;
 }
+void AFA_Plane::PlaneSpawn(const FVector& v_loc, AFA_Object* object_spawn)
+{
+	SetActorLocation(v_loc);
+	if (object_spawn)
+	{
+		object_spawn->SetActorLocation(_spawn_object_location->GetComponentLocation());
+		_spawn_object = object_spawn;
+	}
+}
+
+AFA_Object* AFA_Plane::GetSpawnObject() { return _spawn_object; }
