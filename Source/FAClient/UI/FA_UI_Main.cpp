@@ -13,6 +13,11 @@ void UFA_UI_Main::UIMainInit()
 	_switcher->SetActiveWidgetIndex(1);
 }
 
+void UFA_UI_Main::UIMainObstacleWallTap()
+{
+	_switcher->SetActiveWidgetIndex(4);
+}
+
 void UFA_UI_Main::UIMainChanceJumpFever()
 {
 	_fever->UIFeverInit();

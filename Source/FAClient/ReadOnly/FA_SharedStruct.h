@@ -36,6 +36,7 @@ enum class EObjectType : uint8
 {
 	NO,
 	TRAP,
+	WALL,
 	HOLE,
 	JUMP,
 };
@@ -87,6 +88,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Obstacle")
 		float _obstacle_trap_add_speed = 0.f;
+	UPROPERTY(EditAnywhere, Category = "Obstacle")
+		float _obstacle_wall_tap_timing = 0.f;
+	UPROPERTY(EditAnywhere, Category = "Chance")
+		float _obstacle_wall_tap_slow_rate = 0.f;
 
 	UPROPERTY(EditAnywhere, Category = "Chance")
 		float _chance_jump_add_speed = 0.f;
@@ -116,6 +121,8 @@ public:
 	FORCEINLINE const TArray<FDataObjectProb>& GetProbChances() const { return _prob_chances; }
 
 	FORCEINLINE const float GetObstacleTrapAddSpeed() const { return _obstacle_trap_add_speed; }
+	FORCEINLINE const float GetObstacleWallTapTiming() const { return _obstacle_wall_tap_timing; }
+	FORCEINLINE const float GetObstacleWallSlowRate() const { return _obstacle_wall_tap_slow_rate; }
 
 	FORCEINLINE const float GetChanceJumpAddSpeed() const { return _chance_jump_add_speed; }
 	FORCEINLINE const float GetChanceJumpAddVelocityZ() const { return _chance_jump_add_velocity_z; }
@@ -166,6 +173,10 @@ struct FInfoGame
 public:
 	UPROPERTY()
 		EGameStatus game_status = EGameStatus::TITLE;
+	UPROPERTY()
+		int32 best_score = 0;
+	UPROPERTY()
+		int32 gem = 0;
 };
 
 USTRUCT(BlueprintType)

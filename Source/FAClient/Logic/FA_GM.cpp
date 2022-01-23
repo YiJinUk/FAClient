@@ -6,6 +6,7 @@
 #include "FA_PC.h"
 #include "FA_FunctionLibrary.h"
 #include "Manager/FA_Manager_Pool.h"
+#include "Manager/FA_Manager_SaveLoad.h"
 #include "Actor/Player/FA_Player.h"
 #include "Actor/Object/FA_Plane.h"
 #include "Actor/Object/FA_Object.h"
@@ -63,6 +64,7 @@ void AFA_GM::GMInit()
 	s_param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	_manager_pool = wld->SpawnActor<AFA_Manager_Pool>(s_param); // 풀링 매니저
+	_manager_saveload = wld->SpawnActor<AFA_Manager_SaveLoad>(s_param); // 풀링 매니저
 
 	_manager_pool->PoolInit(_fagi);
 
@@ -93,6 +95,9 @@ void AFA_GM::GMInit()
 	/*플레이어 초기화*/
 	_player_base_location = _player->GetActorLocation();
 	_pre_spawn_plane_loc_x = _player_base_location.X;
+
+	/*세이브파일 로드*/
+	GameLoad();
 
 	/*플레이어컨트롤러 초기화*/
 	_pc->PCInit(this);
@@ -169,11 +174,9 @@ void AFA_GM::TickCheckMoveFloor()
 
 void AFA_GM::TickCheckGameOver()
 {
-	if (_player->PlayerGetSpeed() <= 0)
+	if (_player->PlayerGetSpeed() <= 0 || _player->GetActorLocation().Z <= -300.f)
 	{
-		//GameOver
-		_info_game.game_status = EGameStatus::GAMEOVER;
-		_pc->PCGameOver();
+		GameOver();
 	}
 }
 
@@ -199,6 +202,23 @@ void AFA_GM::GameRestart()
 	_pre_spawn_plane_loc_x = _player_base_location.X;
 	_info_game.game_status = EGameStatus::TITLE;
 }
+void AFA_GM::GameOver()
+{
+	_info_game.game_status = EGameStatus::GAMEOVER;
+	if (_info_game.best_score < _player->GetActorLocation().X)
+	{
+		/*신기록 달성*/
+		_info_game.best_score = _player->GetActorLocation().X;
+		_info_game.gem += 1;
+	}
+	else
+	{
+		/*신기록 달성 실패*/
+	}
+	
+	GameSave();
+	_pc->PCGameOver();
+}
 
 void AFA_GM::ShotPlayer()
 {
@@ -215,17 +235,34 @@ void AFA_GM::ObjectOverlap(const EObjectType e_obj_type)
 	case EObjectType::TRAP:
 		_player->PlayerAddSpeed(_data_game_cache->GetObstacleTrapAddSpeed());
 		break;
+	case EObjectType::WALL:
+		//ObstacleWallTapTimingStart();
+		break;
 	case EObjectType::HOLE:
 		_player->PlayerAddSpeed(0.f);
 		break;
 	case EObjectType::JUMP:
-		//_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
-		//TimerChanceJumpFever();
 		ChanceJumpFeverTimingStart();
 		break;
 	default:
 		break;
 	}
+}
+
+void AFA_GM::ObstacleWallTapTimingStart()
+{
+	//게임속도 감소
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), _data_game_cache->GetObstacleWallSlowRate());
+
+	//피버종료 타이머 시작
+	GetWorldTimerManager().SetTimer(_timer_TimerObstacleWallTapTimingEnd, this, &AFA_GM::TimerObstacleWallTapTimingEnd, _data_game_cache->GetObstacleWallTapTiming() * _data_game_cache->GetObstacleWallSlowRate(), false);
+
+	//UI
+	_pc->PCUIObstacleWallTap();
+}
+void AFA_GM::TimerObstacleWallTapTimingEnd()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 }
 
 void AFA_GM::ChanceJumpFeverTimingStart()
@@ -312,6 +349,15 @@ void AFA_GM::PlaneInitLocation()
 	}
 	
 	_plane_move_count = -1;
+}
+
+void AFA_GM::GameSave()
+{
+	_manager_saveload->SaveStart(_info_game);
+}
+void AFA_GM::GameLoad()
+{
+	_manager_saveload->LoadStart(_info_game);
 }
 
 const int64 AFA_GM::IdGenerator() { return ++_id_generator; }

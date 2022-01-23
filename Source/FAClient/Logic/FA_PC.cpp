@@ -20,6 +20,11 @@ void AFA_PC::PCInit(AFA_GM* fagm)
 	_ui_main->UIMainInit();
 }
 
+void AFA_PC::PCUIObstacleWallTap()
+{
+	_ui_main->UIMainObstacleWallTap();
+}
+
 void AFA_PC::PCUIChanceJumpFever()
 {
 	_ui_main->UIMainChanceJumpFever();

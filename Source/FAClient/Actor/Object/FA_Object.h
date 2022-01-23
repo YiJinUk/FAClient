@@ -33,6 +33,7 @@ private:
 public:
 	/*최초 1회만 호출. 풀링할 때는 호출하지 않음*/
 	void ObjectPostInit(const FDataObject* s_data_object);
+	virtual void ObjectPostInitChild(const FDataObject* s_data_object);
 
 	/*풀링으로 생성 시 호출*/
 	void ObjectInit(const int64 i_id);

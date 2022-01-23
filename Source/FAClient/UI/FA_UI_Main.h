@@ -26,6 +26,7 @@ private:
 	* index 1 : GameStart
 	* index 2 : GameOver
 	* index 3 : JumpFever
+	* index 4 : WallTap
 	*/
 	UPROPERTY(Meta = (BindWidget))
 		UWidgetSwitcher* _switcher = nullptr;
@@ -35,6 +36,8 @@ private:
 		UFA_UI_Fever* _fever = nullptr;
 
 public:
+	void UIMainObstacleWallTap();
+
 	void UIMainChanceJumpFever();
 	void UIMainFeverSuccess();
 	void UIMainFeverFailed();

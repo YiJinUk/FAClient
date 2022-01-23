@@ -29,6 +29,8 @@ private:
 
 #pragma region Game
 public:
+	void PCUIObstacleWallTap();
+
 	void PCFeverSuccess();
 	void PCFeverFailed();
 

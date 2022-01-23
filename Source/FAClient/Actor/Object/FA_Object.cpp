@@ -33,6 +33,12 @@ void AFA_Object::ObjectPostInit(const FDataObject* s_data_object)
 {
 	_info_object.code = s_data_object->GetCode();
 	_info_object.obj_type = s_data_object->GetObjectType();
+
+	ObjectPostInitChild(s_data_object);
+}
+void AFA_Object::ObjectPostInitChild(const FDataObject* s_data_object)
+{
+	//override
 }
 
 void AFA_Object::ObjectInit(const int64 i_id)

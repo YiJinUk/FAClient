@@ -11,6 +11,7 @@ class UFA_GI;
 class AFA_PC;
 class AFA_Player;
 class AFA_Manager_Pool;
+class AFA_Manager_SaveLoad;
 class AFA_Plane;
 class AFA_Object;
 
@@ -62,11 +63,14 @@ private:
 private:
 	UPROPERTY()
 		AFA_Manager_Pool* _manager_pool = nullptr;
+	UPROPERTY()
+		AFA_Manager_SaveLoad* _manager_saveload = nullptr;
 #pragma endregion
 
 #pragma region Game,Stage
 public:
 	void GameRestart();
+	void GameOver();
 private:
 	//플레이어캐릭터 위치의 X값 입니다
 	UPROPERTY()
@@ -103,6 +107,16 @@ private:
 		TArray<FString> _prob_obstacles;
 	UPROPERTY()
 		TArray<FString> _prob_chances;
+#pragma endregion
+
+#pragma region Object.Obstacle.Wall
+private:
+	void ObstacleWallTapTimingStart();
+	void TimerObstacleWallTapTimingEnd();
+
+private:
+	UPROPERTY()
+		FTimerHandle _timer_TimerObstacleWallTapTimingEnd;
 #pragma endregion
 
 #pragma region Object.Chance
@@ -144,4 +158,9 @@ private:
 		bool _is_add_power_value = true;
 #pragma endregion
 
+#pragma region SaveLoad
+private:
+	void GameSave();
+	void GameLoad();
+#pragma endregion
 };
