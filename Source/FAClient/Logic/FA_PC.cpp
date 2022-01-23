@@ -20,6 +20,20 @@ void AFA_PC::PCInit(AFA_GM* fagm)
 	_ui_main->UIMainInit();
 }
 
+void AFA_PC::PCUIChanceJumpFever()
+{
+	_ui_main->UIMainChanceJumpFever();
+}
+void AFA_PC::PCFeverSuccess()
+{
+	_ui_main->UIMainFeverSuccess();
+	_fagm->FeverSuccess();
+}
+void AFA_PC::PCFeverFailed()
+{
+	_ui_main->UIMainFeverFailed();
+}
+
 void AFA_PC::PCShotStart()
 {
 	_ui_main->UIMainShotStart();
@@ -30,7 +44,6 @@ void AFA_PC::PCGameRestart()
 	_fagm->GameRestart();
 	_ui_main->UIMainGameRestart();
 }
-
 void AFA_PC::PCGameOver()
 {
 	_ui_main->UIMainGameOver();

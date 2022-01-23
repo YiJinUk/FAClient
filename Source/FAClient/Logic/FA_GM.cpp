@@ -66,14 +66,6 @@ void AFA_GM::GMInit()
 
 	_manager_pool->PoolInit(_fagi);
 
-	/*바닥 초기화*/
-	for (int32 i = 0, i_len = _data_game_cache->GetPlaneBaseSpawnCount(); i < i_len; ++i)
-	{
-		AFA_Plane* plane = _manager_pool->PoolGetPlaneByCode("PLANE00001");
-		_spawn_planes.Add(plane);
-	}
-	PlaneInitLocation();
-
 	/*오브젝트 생성확률 초기화*/
 	for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbObstacles())
 	{
@@ -89,6 +81,14 @@ void AFA_GM::GMInit()
 			_prob_chances.Add(s_data_obj_prob.GetCode());
 		}
 	}
+
+	/*바닥 초기화*/
+	for (int32 i = 0, i_len = _data_game_cache->GetPlaneBaseSpawnCount(); i < i_len; ++i)
+	{
+		AFA_Plane* plane = _manager_pool->PoolGetPlaneByCode("PLANE00001");
+		_spawn_planes.Add(plane);
+	}
+	PlaneInitLocation();
 
 	/*플레이어 초기화*/
 	_player_base_location = _player->GetActorLocation();
@@ -183,15 +183,15 @@ void AFA_GM::GameRestart()
 	_player->PlayerMovementSetActive(false);
 	_player->SetActorLocation(_player_base_location);
 
-	/*바닥 풀링*/
-	PlaneInitLocation();
-
 	/*오브젝트 풀링*/
 	for (AFA_Object* object : _spawn_objects)
 	{
 		_manager_pool->PoolInObject(object);
 	}
 	_spawn_objects.Empty(50);
+
+	/*바닥 풀링*/
+	PlaneInitLocation();
 
 	/*변수 초기화*/
 	_plane_index_move = -1;
@@ -219,11 +219,52 @@ void AFA_GM::ObjectOverlap(const EObjectType e_obj_type)
 		_player->PlayerAddSpeed(0.f);
 		break;
 	case EObjectType::JUMP:
-		_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+		//_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+		//TimerChanceJumpFever();
+		ChanceJumpFeverTimingStart();
 		break;
 	default:
 		break;
 	}
+}
+
+void AFA_GM::ChanceJumpFeverTimingStart()
+{
+	/*피버 타이밍이 발동되었습니다*/
+
+	//게임속도 감소
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), _data_game_cache->GetChanceJumpFeverSlotRate());
+
+	//피버종료 타이머 시작
+	GetWorldTimerManager().SetTimer(_timer_TimerChanceJumpFeverFailed, this, &AFA_GM::TimerChanceJumpFeverFailed, _data_game_cache->GetChanceJumpFeverTiming() * _data_game_cache->GetChanceJumpFeverSlotRate(), false);
+
+	//UI
+	_pc->PCUIChanceJumpFever();
+}
+
+void AFA_GM::TimerChanceJumpFeverFailed()
+{
+	/*피버를 작동하지 못했습니다*/
+
+	//게임속도 원래대로
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+
+	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+
+	_pc->PCFeverFailed();
+}
+
+void AFA_GM::FeverSuccess()
+{
+	/*피버 발동에 성공했습니다*/
+
+	//게임속도 원래대로
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+
+	//피버종료타이머 취소
+	GetWorldTimerManager().PauseTimer(_timer_TimerChanceJumpFeverFailed);
+
+	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed() * _data_game_cache->GetChanceJumpAddFever(), _data_game_cache->GetChanceJumpAddVelocityZ() * _data_game_cache->GetChanceJumpAddFever());
 }
 
 const FString AFA_GM::CalcSpawnObjectCode()
@@ -248,12 +289,29 @@ const FString AFA_GM::CalcSpawnObjectCode()
 
 void AFA_GM::PlaneInitLocation()
 {
-	_plane_index_move = -1;
-	for (AFA_Plane* plane : _spawn_planes)
+	_plane_move_count = -1;
+	AFA_Plane* plane = nullptr;
+	for (int32 i = 0, i_len = _spawn_planes.Num(); i < i_len; ++i)
 	{
-		plane->PlaneInit(FVector(_data_game_cache->GetPlaneLength() * ++_plane_index_move, 0.f, 0.f));
+		++_plane_move_count;
+		plane = _spawn_planes[i];
+		if (i >= _data_game_cache->GetPlaneBaseSpawnObject())
+		{
+			/*새로운 오브젝트 생성*/
+			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
+			object_spawn->ObjectInit(IdGenerator());
+			_spawn_objects.Add(object_spawn);
+
+			/*이동해야할 바닥 초기화*/
+			plane->PlaneSpawn(FVector(_plane_move_count * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
+		}
+		else
+		{
+			plane->PlaneSpawn(FVector(_plane_move_count * _data_game_cache->GetPlaneLength(), 0.f, 0.f), nullptr);
+		}
 	}
-	_plane_index_move = -1;
+	
+	_plane_move_count = -1;
 }
 
 const int64 AFA_GM::IdGenerator() { return ++_id_generator; }

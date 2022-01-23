@@ -89,7 +89,7 @@ private:
 		int32 _plane_move_count = -1;
 #pragma endregion
 
-#pragma region Object
+#pragma region Object.Total
 public:
 	void ObjectOverlap(const EObjectType e_obj_type);
 
@@ -103,6 +103,21 @@ private:
 		TArray<FString> _prob_obstacles;
 	UPROPERTY()
 		TArray<FString> _prob_chances;
+#pragma endregion
+
+#pragma region Object.Chance
+public:
+	//피버발동에 성공했습니다
+	void FeverSuccess();
+private:
+	//피버타이밍이 시작되었습니다
+	void ChanceJumpFeverTimingStart();
+	//피버를 발동하지 못했습니다
+	void TimerChanceJumpFeverFailed();
+	
+private:
+	UPROPERTY()
+		FTimerHandle _timer_TimerChanceJumpFeverFailed;
 #pragma endregion
 
 #pragma region Player

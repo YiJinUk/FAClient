@@ -66,9 +66,13 @@ protected:
 		FVector _player_base_angle = FVector::ZeroVector;
 	UPROPERTY(EditAnywhere, Category = "Player")
 		int32 _player_base_max_power = 10000;
+	UPROPERTY(EditAnywhere, Category = "Player")
+		int32 _player_camera_max_location_z = 0;
 
 	UPROPERTY(EditAnywhere, Category = "Plane")
 		int32 _plane_base_spawn_count = 5;
+	UPROPERTY(EditAnywhere, Category = "Plane")
+		int32 _plane_base_spawn_object = 5;
 	UPROPERTY(EditAnywhere, Category = "Plane")
 		int32 _plane_length = 5000;
 
@@ -88,12 +92,22 @@ protected:
 		float _chance_jump_add_speed = 0.f;
 	UPROPERTY(EditAnywhere, Category = "Chance")
 		float _chance_jump_add_velocity_z = 0.f;
+	UPROPERTY(EditAnywhere, Category = "Chance")
+		float _chance_jump_add_fever = 0.f;
+	//점프대에 닿았을때 변수시간안에 탭해야 피버가 발동합니다
+	UPROPERTY(EditAnywhere, Category = "Chance")
+		float _chance_jump_fever_timing = 2.f;
+	//피버타이밍때 게임속도가 해당 값만큼 느려집니다
+	UPROPERTY(EditAnywhere, Category = "Chance")
+		float _chance_jump_fever_slow_rate = 0.1f;
 public:
 	FORCEINLINE const float GetPlayerGravity() const { return _player_gravity; }
 	FORCEINLINE const FVector GetPlayerBaseAngle() const { return _player_base_angle; }
 	FORCEINLINE const int32 GetPlayerBaseMaxPower() const { return _player_base_max_power; }
+	FORCEINLINE const int32 GetPlayerCameraMaxLocationZ() const { return _player_camera_max_location_z; }
 
 	FORCEINLINE const int32 GetPlaneBaseSpawnCount() const { return _plane_base_spawn_count; }
+	FORCEINLINE const int32 GetPlaneBaseSpawnObject() const { return _plane_base_spawn_object; }
 	FORCEINLINE const int32 GetPlaneLength() const { return _plane_length; }
 
 	FORCEINLINE const int32 GetObjectProbObstacle() const { return _object_prob_obstacle; }
@@ -105,6 +119,10 @@ public:
 
 	FORCEINLINE const float GetChanceJumpAddSpeed() const { return _chance_jump_add_speed; }
 	FORCEINLINE const float GetChanceJumpAddVelocityZ() const { return _chance_jump_add_velocity_z; }
+	FORCEINLINE const float GetChanceJumpAddFever() const { return _chance_jump_add_fever; }
+	FORCEINLINE const float GetChanceJumpFeverTiming() const { return _chance_jump_fever_timing; }
+	FORCEINLINE const float GetChanceJumpFeverSlotRate() const { return _chance_jump_fever_slow_rate; }
+
 };
 
 USTRUCT(BlueprintType)

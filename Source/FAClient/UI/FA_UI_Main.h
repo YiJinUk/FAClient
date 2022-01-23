@@ -7,6 +7,7 @@
 #include "FA_UI_Main.generated.h"
 
 class UFA_UI_GameStart;
+class UFA_UI_Fever;
 class UWidgetSwitcher;
 
 /**
@@ -24,13 +25,20 @@ private:
 	* index 0 : empty
 	* index 1 : GameStart
 	* index 2 : GameOver
+	* index 3 : JumpFever
 	*/
 	UPROPERTY(Meta = (BindWidget))
 		UWidgetSwitcher* _switcher = nullptr;
 	UPROPERTY(Meta = (BindWidget))
 		UFA_UI_GameStart* _game_start = nullptr;
+	UPROPERTY(Meta = (BindWidget))
+		UFA_UI_Fever* _fever = nullptr;
 
 public:
+	void UIMainChanceJumpFever();
+	void UIMainFeverSuccess();
+	void UIMainFeverFailed();
+
 	void UIMainShotStart();
 	void UIMainGameRestart();
 	void UIMainGameOver();

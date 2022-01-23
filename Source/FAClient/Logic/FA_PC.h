@@ -29,6 +29,9 @@ private:
 
 #pragma region Game
 public:
+	void PCFeverSuccess();
+	void PCFeverFailed();
+
 	void PCShotStart();
 	void PCGameRestart();
 #pragma endregion
@@ -36,6 +39,8 @@ public:
 #pragma region UI
 public:
 	void PCGameOver();
+
+	void PCUIChanceJumpFever();
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
 		void PCBPInit();
