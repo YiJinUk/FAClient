@@ -35,7 +35,7 @@ public:
 	void ObjectPostInit(const FDataObject* s_data_object);
 
 	/*풀링으로 생성 시 호출*/
-	void ObjectInit();
+	void ObjectInit(const int64 i_id);
 
 	void ObjectSetPoolActive(const bool b_is_active);
 	virtual void ObjectSetPoolActiveChild(const bool b_is_active);

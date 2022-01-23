@@ -37,6 +37,7 @@ enum class EObjectType : uint8
 	NO,
 	TRAP,
 	HOLE,
+	JUMP,
 };
 
 USTRUCT(BlueprintType)
@@ -82,6 +83,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Obstacle")
 		float _obstacle_trap_add_speed = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Chance")
+		float _chance_jump_add_speed = 0.f;
+	UPROPERTY(EditAnywhere, Category = "Chance")
+		float _chance_jump_add_velocity_z = 0.f;
 public:
 	FORCEINLINE const float GetPlayerGravity() const { return _player_gravity; }
 	FORCEINLINE const FVector GetPlayerBaseAngle() const { return _player_base_angle; }
@@ -96,6 +102,9 @@ public:
 	FORCEINLINE const TArray<FDataObjectProb>& GetProbChances() const { return _prob_chances; }
 
 	FORCEINLINE const float GetObstacleTrapAddSpeed() const { return _obstacle_trap_add_speed; }
+
+	FORCEINLINE const float GetChanceJumpAddSpeed() const { return _chance_jump_add_speed; }
+	FORCEINLINE const float GetChanceJumpAddVelocityZ() const { return _chance_jump_add_velocity_z; }
 };
 
 USTRUCT(BlueprintType)
@@ -142,11 +151,23 @@ public:
 };
 
 USTRUCT(BlueprintType)
+struct FInfoPlayer
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+		int32 max_velocity_z = 0;
+};
+
+USTRUCT(BlueprintType)
 struct FInfoObject
 {
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
+		int64 id = 0;
 	UPROPERTY()
 		FString code = "0";
 	UPROPERTY()

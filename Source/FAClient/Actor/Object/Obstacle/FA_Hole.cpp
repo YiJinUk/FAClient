@@ -11,7 +11,6 @@ AFA_Hole::AFA_Hole()
 {
 	if (_box)
 	{
-		_box->SetCollisionResponseToChannel(ECollisionChannel::ECC_Vehicle, ECollisionResponse::ECR_Overlap);
 		_box->OnComponentBeginOverlap.AddDynamic(this, &AFA_Hole::OnBoxOverlap);
 	}
 }

@@ -35,8 +35,9 @@ void AFA_Object::ObjectPostInit(const FDataObject* s_data_object)
 	_info_object.obj_type = s_data_object->GetObjectType();
 }
 
-void AFA_Object::ObjectInit()
+void AFA_Object::ObjectInit(const int64 i_id)
 {
+	_info_object.id = i_id;
 	ObjectSetPoolActive(true);
 }
 

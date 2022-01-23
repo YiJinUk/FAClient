@@ -21,6 +21,12 @@ UCLASS()
 class FACLIENT_API AFA_GM : public AGameModeBase
 {
 	GENERATED_BODY()
+
+#pragma region Debug
+public:
+	UFUNCTION(BlueprintCallable)
+		void DebugDeceleration(const int32 i_speed);
+#pragma endregion
 	
 #pragma region Init
 protected:
@@ -33,15 +39,23 @@ private:
 
 #pragma region General
 private:
+	const int64 IdGenerator();
+private:
 	UPROPERTY()
 		UFA_GI* _fagi = nullptr;
 
 	FDataGame* _data_game_cache = nullptr;
+
+	UPROPERTY()
+		int64 _id_generator = 0;
 #pragma endregion
 
 #pragma region Tick
 protected:
 	virtual void Tick(float DeltaTime) override;
+private:
+	void TickCheckMoveFloor();
+	void TickCheckGameOver();
 #pragma endregion
 
 #pragma region Manager

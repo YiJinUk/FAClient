@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ReadOnly/FA_SharedStruct.h"
 #include "Actor/FA_Actor.h"
 #include "FA_Player.generated.h"
 
@@ -43,11 +44,23 @@ public:
 	void PlayerSetSpeed(const int32 i_speed);
 	void PlayerSetVelocity(const FVector& v_velocity);
 	void PlayerAddSpeed(const float f_speed);
+	void PlayerMovementJump(const float f_add_speed, const float f_add_velocty_z);
 
 	const int32 PlayerGetSpeed();
+	const FVector& PlayerMovementGetVelocity();
 private:
-	//UFUNCTION()
-		//void PlayerOnBounce(const FHitResult& s_hit, const FVector& v_velocity);
+	UFUNCTION()
+		void PlayerOnBounce(const FHitResult& s_hit, const FVector& v_velocity);
+#pragma endregion
+
+#pragma region Stat
+public:
+	void TimerSetMaxVelocityZ();
+
+	FInfoPlayer& GetInfoPlayer();
+private:
+	UPROPERTY()
+		FInfoPlayer _info_player;
 #pragma endregion
 
 };

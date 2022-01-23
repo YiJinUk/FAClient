@@ -17,6 +17,14 @@ AFA_GM::AFA_GM()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void AFA_GM::DebugDeceleration(const int32 i_speed)
+{
+	if (_player)
+	{
+		_player->PlayerSetSpeed(i_speed);
+	}
+}
+
 void AFA_GM::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
@@ -114,32 +122,58 @@ void AFA_GM::Tick(float DeltaTime)
 
 	if (_info_game.game_status == EGameStatus::PLAY)
 	{
-		/*바닥 생성 검사*/
-		if (_player->GetActorLocation().X - _pre_spawn_plane_loc_x >= _data_game_cache->GetPlaneLength())
+		/*바닥 생성(이동) 검사*/
+		TickCheckMoveFloor();
+
+		TickCheckGameOver();
+	}
+}
+
+void AFA_GM::TickCheckMoveFloor()
+{
+	if (_player->GetActorLocation().X - _pre_spawn_plane_loc_x >= _data_game_cache->GetPlaneLength())
+	{
+		/*바닥 이동*/
+		++_plane_move_count;
+		++_plane_index_move;
+
+		/*이동해야할 바닥위치값을 구합니다*/
+		_pre_spawn_plane_loc_x = _player->GetActorLocation().X;
+
+		if (_plane_index_move >= _data_game_cache->GetPlaneBaseSpawnCount())
+			_plane_index_move = 0;
+
+		/*이동해야할 바닥이 오브젝트를 가지고 있다면 풀링합니다*/
+		AFA_Plane* plane = _spawn_planes[_plane_index_move];
+		if (plane->GetSpawnObject())
 		{
-			++_plane_move_count;
-			++_plane_index_move;
-
-			/*바닥 생성*/
-			_pre_spawn_plane_loc_x = _player->GetActorLocation().X;
-
-			if (_plane_index_move >= _data_game_cache->GetPlaneBaseSpawnCount())
-				_plane_index_move = 0;
-
-			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
-			object_spawn->ObjectInit();
-			AFA_Plane* plane = _spawn_planes[_plane_index_move];
+			for (int32 i = _spawn_objects.Num() - 1; i >= 0; --i)
+			{
+				if (_spawn_objects[i]->GetInfoObject().id == plane->GetSpawnObject()->GetInfoObject().id)
+					_spawn_objects.RemoveAtSwap(i);
+			}
 			_manager_pool->PoolInObject(plane->GetSpawnObject());
-			plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
-			_spawn_objects.Add(object_spawn);
 		}
 
-		if (_player->PlayerGetSpeed() <= 0)
-		{
-			//GameOver
-			_info_game.game_status = EGameStatus::GAMEOVER;
-			_pc->PCGameOver();
-		}
+		/*새로운 오브젝트 생성*/
+		AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
+		object_spawn->ObjectInit(IdGenerator());
+		_spawn_objects.Add(object_spawn);
+
+		/*이동해야할 바닥 초기화*/
+		plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
+	}
+
+	
+}
+
+void AFA_GM::TickCheckGameOver()
+{
+	if (_player->PlayerGetSpeed() <= 0)
+	{
+		//GameOver
+		_info_game.game_status = EGameStatus::GAMEOVER;
+		_pc->PCGameOver();
 	}
 }
 
@@ -169,8 +203,7 @@ void AFA_GM::GameRestart()
 void AFA_GM::ShotPlayer()
 {
 	_player->PlayerMovementSetActive(true);
-	_player->PlayerSetSpeed(_data_game_cache->GetPlayerBaseMaxPower() * _power_progress_value);
-	_player->PlayerSetVelocity(_data_game_cache->GetPlayerBaseAngle());
+	_player->PlayerSetVelocity(_data_game_cache->GetPlayerBaseAngle() * _power_progress_value);
 
 	_info_game.game_status = EGameStatus::PLAY;
 }
@@ -184,6 +217,9 @@ void AFA_GM::ObjectOverlap(const EObjectType e_obj_type)
 		break;
 	case EObjectType::HOLE:
 		_player->PlayerAddSpeed(0.f);
+		break;
+	case EObjectType::JUMP:
+		_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
 		break;
 	default:
 		break;
@@ -219,5 +255,7 @@ void AFA_GM::PlaneInitLocation()
 	}
 	_plane_index_move = -1;
 }
+
+const int64 AFA_GM::IdGenerator() { return ++_id_generator; }
 
 void AFA_GM::SetPowerProgressMaterial(UMaterialInstanceDynamic* mid_power_progress) { _power_progress = mid_power_progress; }

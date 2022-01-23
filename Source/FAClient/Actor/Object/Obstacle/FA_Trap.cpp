@@ -11,7 +11,6 @@ AFA_Trap::AFA_Trap()
 {
 	if (_box)
 	{
-		_box->SetCollisionResponseToChannel(ECollisionChannel::ECC_Vehicle, ECollisionResponse::ECR_Overlap);
 		_box->OnComponentBeginOverlap.AddDynamic(this, &AFA_Trap::OnBoxOverlap);
 	}
 }
