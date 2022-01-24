@@ -50,8 +50,5 @@ void AFA_Wall::TimerSetPhysicsSMCS()
 
 void AFA_Wall::OnBoxOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AFA_Player* player = Cast<AFA_Player>(OtherActor);
-	if (!player) return;
-
-	_fagm->ObjectOverlap(EObjectType::WALL);
+	_fagm->ObjectOverlap(this);
 }

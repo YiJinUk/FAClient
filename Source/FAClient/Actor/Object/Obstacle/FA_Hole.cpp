@@ -17,8 +17,5 @@ AFA_Hole::AFA_Hole()
 
 void AFA_Hole::OnBoxOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AFA_Player* player = Cast<AFA_Player>(OtherActor);
-	if (!player) return;
-
-	_fagm->ObjectOverlap(EObjectType::HOLE);
+	_fagm->ObjectOverlap(this);
 }

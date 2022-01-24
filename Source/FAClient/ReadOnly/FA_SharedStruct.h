@@ -35,6 +35,7 @@ UENUM()
 enum class EObjectType : uint8
 {
 	NO,
+	GEM,
 	TRAP,
 	WALL,
 	HOLE,
@@ -90,7 +91,7 @@ protected:
 		float _obstacle_trap_add_speed = 0.f;
 	UPROPERTY(EditAnywhere, Category = "Obstacle")
 		float _obstacle_wall_tap_timing = 0.f;
-	UPROPERTY(EditAnywhere, Category = "Chance")
+	UPROPERTY(EditAnywhere, Category = "Obstacle")
 		float _obstacle_wall_tap_slow_rate = 0.f;
 
 	UPROPERTY(EditAnywhere, Category = "Chance")
@@ -105,6 +106,13 @@ protected:
 	//피버타이밍때 게임속도가 해당 값만큼 느려집니다
 	UPROPERTY(EditAnywhere, Category = "Chance")
 		float _chance_jump_fever_slow_rate = 0.1f;
+
+	UPROPERTY(EditAnywhere, Category = "Gem")
+		int32 _gem_row = 3;
+	UPROPERTY(EditAnywhere, Category = "Gem")
+		int32 _gem_column = 9;
+	UPROPERTY(EditAnywhere, Category = "Gem")
+		int32 _gem_loc_z = 300;
 public:
 	FORCEINLINE const float GetPlayerGravity() const { return _player_gravity; }
 	FORCEINLINE const FVector GetPlayerBaseAngle() const { return _player_base_angle; }
@@ -130,6 +138,9 @@ public:
 	FORCEINLINE const float GetChanceJumpFeverTiming() const { return _chance_jump_fever_timing; }
 	FORCEINLINE const float GetChanceJumpFeverSlotRate() const { return _chance_jump_fever_slow_rate; }
 
+	FORCEINLINE const int32 GetGemRow() const { return _gem_row; }
+	FORCEINLINE const int32 GetGemColumn() const { return _gem_column; }
+	FORCEINLINE const int32 GetGemLocZ() const { return _gem_loc_z; }
 };
 
 USTRUCT(BlueprintType)

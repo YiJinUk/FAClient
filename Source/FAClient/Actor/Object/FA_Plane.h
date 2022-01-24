@@ -27,8 +27,14 @@ public:
 	void PlaneInit(const FVector& v_loc);
 	void PlaneSpawn(const FVector& v_loc, AFA_Object* object_spawn);
 
+	void AddGem(AFA_Object* gem);
+
 	AFA_Object* GetSpawnObject();
+	const FVector GetObjectLocation();
+	TArray<AFA_Object*, TInlineAllocator<30>>& GetSpawnGems();
 private:
 	UPROPERTY()
 		AFA_Object* _spawn_object = nullptr;
+
+	TArray<AFA_Object*, TInlineAllocator<30>> _spawn_gems;
 };

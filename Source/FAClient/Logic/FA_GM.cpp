@@ -160,6 +160,17 @@ void AFA_GM::TickCheckMoveFloor()
 			_manager_pool->PoolInObject(plane->GetSpawnObject());
 		}
 
+		/*Gem이 있다면 풀링합니다*/
+		TArray<AFA_Object*, TInlineAllocator<30>>& spawn_gems = plane->GetSpawnGems();
+		if (spawn_gems.Num() >= 1)
+		{
+			for (AFA_Object* gem : spawn_gems)
+			{
+				_manager_pool->PoolInObject(gem);
+			}
+			spawn_gems.Empty(30);
+		}
+
 		/*새로운 오브젝트 생성*/
 		AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
 		object_spawn->ObjectInit(IdGenerator());
@@ -167,6 +178,12 @@ void AFA_GM::TickCheckMoveFloor()
 
 		/*이동해야할 바닥 초기화*/
 		plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
+
+		/*오브젝트가 찬스라면 Gem도 생성합니다*/
+		if (object_spawn->GetInfoObject().obj_type == EObjectType::JUMP)
+		{
+			SpawnGem(plane);
+		}
 	}
 
 	
@@ -228,9 +245,11 @@ void AFA_GM::ShotPlayer()
 	_info_game.game_status = EGameStatus::PLAY;
 }
 
-void AFA_GM::ObjectOverlap(const EObjectType e_obj_type)
+void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap)
 {
-	switch (e_obj_type)
+	if (!obj_overlap) return;
+
+	switch (obj_overlap->GetInfoObject().obj_type)
 	{
 	case EObjectType::TRAP:
 		_player->PlayerAddSpeed(_data_game_cache->GetObstacleTrapAddSpeed());
@@ -243,6 +262,9 @@ void AFA_GM::ObjectOverlap(const EObjectType e_obj_type)
 		break;
 	case EObjectType::JUMP:
 		ChanceJumpFeverTimingStart();
+		break;
+	case EObjectType::GEM:
+		_manager_pool->PoolInObject(obj_overlap);
 		break;
 	default:
 		break;
@@ -304,6 +326,22 @@ void AFA_GM::FeverSuccess()
 	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed() * _data_game_cache->GetChanceJumpAddFever(), _data_game_cache->GetChanceJumpAddVelocityZ() * _data_game_cache->GetChanceJumpAddFever());
 }
 
+void AFA_GM::SpawnGem(AFA_Plane* plane)
+{
+	AFA_Object* gem = nullptr;
+	const FVector& v_loc_base = plane->GetObjectLocation();
+	for (int32 i_row = 1, i_row_len = _data_game_cache->GetGemRow(); i_row <= i_row_len; ++i_row)
+	{
+		for (int32 i_column = 1, i_column_len = _data_game_cache->GetGemColumn(); i_column <= i_column_len; ++i_column)
+		{
+			gem = _manager_pool->PoolGetObjectByCode("OBJ00000");
+			gem->ObjectInit(IdGenerator());
+			gem->SetActorLocation(FVector(v_loc_base.X + (50 * i_column) - 200, v_loc_base.Y, _data_game_cache->GetGemLocZ()+ (50 * i_row)));
+			plane->AddGem(gem);
+		}
+	}
+}
+
 const FString AFA_GM::CalcSpawnObjectCode()
 {
 	//_fagi->IsPassProbByInt()
@@ -332,6 +370,18 @@ void AFA_GM::PlaneInitLocation()
 	{
 		++_plane_move_count;
 		plane = _spawn_planes[i];
+
+		/*바닥이 Gem을 가지고 있다면 Gem을 풀링합니다*/
+		TArray<AFA_Object*, TInlineAllocator<30>>& spawn_gems = plane->GetSpawnGems();
+		if (spawn_gems.Num() >= 1)
+		{
+			for (AFA_Object* gem : spawn_gems)
+			{
+				_manager_pool->PoolInObject(gem);
+			}
+			spawn_gems.Empty(30);
+		}
+
 		if (i >= _data_game_cache->GetPlaneBaseSpawnObject())
 		{
 			/*새로운 오브젝트 생성*/

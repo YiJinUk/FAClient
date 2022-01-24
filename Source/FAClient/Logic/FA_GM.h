@@ -95,7 +95,7 @@ private:
 
 #pragma region Object.Total
 public:
-	void ObjectOverlap(const EObjectType e_obj_type);
+	void ObjectOverlap(AFA_Object* obj_overlap);
 
 private:
 	const FString CalcSpawnObjectCode();
@@ -132,6 +132,11 @@ private:
 private:
 	UPROPERTY()
 		FTimerHandle _timer_TimerChanceJumpFeverFailed;
+#pragma endregion
+
+#pragma region Object.Gem
+private:
+	void SpawnGem(AFA_Plane* plane);
 #pragma endregion
 
 #pragma region Player

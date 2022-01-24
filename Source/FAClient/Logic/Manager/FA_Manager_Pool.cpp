@@ -29,7 +29,7 @@ void AFA_Manager_Pool::PoolInObject(AFA_Object* object)
 {
 	if (!object) return;
 	object->ObjectSetPoolActive(false);
-	_pool_object.FindOrAdd(object->GetInfoObject().code).Add(object);
+	_pool_object.FindOrAdd(object->GetInfoObject().code).AddUnique(object);
 }
 
 AFA_Plane* AFA_Manager_Pool::PoolOutPlane(const FString& str_code_plane)
