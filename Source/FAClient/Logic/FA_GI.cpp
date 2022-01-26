@@ -8,14 +8,13 @@
 UFA_GI::UFA_GI()
 {
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_GAME(TEXT("/Game/FAContent/ReadOnly/Data/FADT_Game.FADT_Game"));
-	if (DT_GAME.Succeeded())
-		_dt_game = DT_GAME.Object;
+	if (DT_GAME.Succeeded()) _dt_game = DT_GAME.Object;
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_PLANE(TEXT("/Game/FAContent/ReadOnly/Data/FADT_Plane.FADT_Plane"));
-	if (DT_PLANE.Succeeded())
-		_dt_plane = DT_PLANE.Object;
+	if (DT_PLANE.Succeeded()) _dt_plane = DT_PLANE.Object;
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_OBJECT(TEXT("/Game/FAContent/ReadOnly/Data/FADT_Object.FADT_Object"));
-	if (DT_OBJECT.Succeeded())
-		_dt_object = DT_OBJECT.Object;
+	if (DT_OBJECT.Succeeded()) _dt_object = DT_OBJECT.Object;
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_VFX(TEXT("/Game/FAContent/ReadOnly/Data/FADT_VFX.FADT_VFX"));
+	if (DT_VFX.Succeeded()) _dt_vfx = DT_VFX.Object;
 }
 
 void UFA_GI::GIInit()
@@ -32,6 +31,11 @@ FDataObject* UFA_GI::FindDataObjectByCode(const FString& str_code_object)
 {
 	if (!_dt_object) return nullptr;
 	return _dt_object->FindRow<FDataObject>(*str_code_object, "0");
+}
+FDataVFX* UFA_GI::FindDataVFXByCode(const FString& str_code_vfx)
+{
+	if (!_dt_vfx) return nullptr;
+	return _dt_vfx->FindRow<FDataVFX>(*str_code_vfx, "0");
 }
 
 int32 UFA_GI::GetRandomByInt(const int32 i_min, const int32 i_max)

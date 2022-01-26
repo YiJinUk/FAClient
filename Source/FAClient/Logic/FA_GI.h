@@ -24,6 +24,7 @@ public:
 public:
 	FDataPlane* FindDataPlaneByCode(const FString& str_code_plane);
 	FDataObject* FindDataObjectByCode(const FString& str_code_object);
+	FDataVFX* FindDataVFXByCode(const FString& str_code_vfx);
 
 	FDataGame* GetDataGame();
 private:
@@ -33,6 +34,8 @@ private:
 		UDataTable* _dt_plane = nullptr;
 	UPROPERTY()
 		UDataTable* _dt_object = nullptr;
+	UPROPERTY()
+		UDataTable* _dt_vfx = nullptr;
 
 	FDataGame* _data_game = nullptr;
 #pragma endregion

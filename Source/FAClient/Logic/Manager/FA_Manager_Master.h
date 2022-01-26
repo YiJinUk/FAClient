@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ReadOnly/FA_SharedStruct.h"
 #include "GameFramework/Actor.h"
 #include "FA_Manager_Master.generated.h"
 

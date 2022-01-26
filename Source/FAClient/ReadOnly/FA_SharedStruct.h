@@ -42,6 +42,12 @@ enum class EObjectType : uint8
 	JUMP,
 };
 
+UENUM()
+enum class EVFXType : uint8
+{
+	GEM,
+};
+
 USTRUCT(BlueprintType)
 struct FDataObjectProb
 {
@@ -173,6 +179,18 @@ public:
 	FORCEINLINE const FString GetCode() const { return _code; }
 	FORCEINLINE const bool GetIsObstacle() const { return _is_obstacle; }
 	FORCEINLINE const EObjectType GetObjectType() const { return _obj_type; }
+};
+
+USTRUCT(BlueprintType)
+struct FDataVFX : public FTableRowBase
+{
+	GENERATED_BODY()
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
+		UParticleSystem* _obtain_gem = nullptr;
+
+public:
+	FORCEINLINE UParticleSystem* GetObtainGem() { return _obtain_gem; }
 };
 
 

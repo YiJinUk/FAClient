@@ -7,6 +7,8 @@
 #include "FA_FunctionLibrary.h"
 #include "Manager/FA_Manager_Pool.h"
 #include "Manager/FA_Manager_SaveLoad.h"
+#include "Manager/FA_Manager_SFX.h"
+#include "Manager/FA_Manager_VFX.h"
 #include "Actor/Player/FA_Player.h"
 #include "Actor/Object/FA_Plane.h"
 #include "Actor/Object/FA_Object.h"
@@ -63,10 +65,13 @@ void AFA_GM::GMInit()
 	FActorSpawnParameters s_param;
 	s_param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	_manager_pool = wld->SpawnActor<AFA_Manager_Pool>(s_param); // 풀링 매니저
-	_manager_saveload = wld->SpawnActor<AFA_Manager_SaveLoad>(s_param); // 풀링 매니저
+	_manager_pool = wld->SpawnActor<AFA_Manager_Pool>(s_param);
+	_manager_saveload = wld->SpawnActor<AFA_Manager_SaveLoad>(s_param);
+	_manager_sfx = wld->SpawnActor<AFA_Manager_SFX>(s_param);
+	_manager_vfx = wld->SpawnActor<AFA_Manager_VFX>(s_param);
 
 	_manager_pool->PoolInit(_fagi);
+	_manager_vfx->VFXInit(_fagi);
 
 	/*오브젝트 생성확률 초기화*/
 	for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbObstacles())
@@ -271,7 +276,8 @@ void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap)
 		ChanceJumpFeverTimingStart();
 		break;
 	case EObjectType::GEM:
-		//_manager_pool->PoolInObject(obj_overlap);
+		_manager_vfx->VFXStart(EVFXType::GEM, obj_overlap->GetActorLocation());
+
 		obj_overlap->SetActorLocation(FVector(-1000.f, 0.f, -1000.f));
 
 		_info_game.gem += 1;

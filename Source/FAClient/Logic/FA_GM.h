@@ -12,6 +12,8 @@ class AFA_PC;
 class AFA_Player;
 class AFA_Manager_Pool;
 class AFA_Manager_SaveLoad;
+class AFA_Manager_SFX;
+class AFA_Manager_VFX;
 class AFA_Plane;
 class AFA_Object;
 
@@ -66,6 +68,10 @@ private:
 		AFA_Manager_Pool* _manager_pool = nullptr;
 	UPROPERTY()
 		AFA_Manager_SaveLoad* _manager_saveload = nullptr;
+	UPROPERTY()
+		AFA_Manager_SFX* _manager_sfx = nullptr;
+	UPROPERTY()
+		AFA_Manager_VFX* _manager_vfx = nullptr;
 #pragma endregion
 
 #pragma region Game,Stage
