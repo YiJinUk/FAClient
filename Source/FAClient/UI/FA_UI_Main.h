@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ReadOnly/FA_SharedStruct.h"
 #include "UI/FA_UI_Master.h"
 #include "FA_UI_Main.generated.h"
 
 class UFA_UI_GameStart;
 class UFA_UI_Fever;
 class UWidgetSwitcher;
+class UTextBlock;
 
 /**
  * 
@@ -19,7 +21,7 @@ class FACLIENT_API UFA_UI_Main : public UFA_UI_Master
 	GENERATED_BODY()
 	
 public:
-	void UIMainInit();
+	void UIMainInit(const FInfoGame& s_info_game);
 private:
 	/*
 	* index 0 : empty
@@ -35,7 +37,16 @@ private:
 	UPROPERTY(Meta = (BindWidget))
 		UFA_UI_Fever* _fever = nullptr;
 
+	UPROPERTY(Meta = (BindWidget))
+		UTextBlock* _gem = nullptr;
+	UPROPERTY(Meta = (BindWidget))
+		UTextBlock* _score_best = nullptr;
+	UPROPERTY(Meta = (BindWidget))
+		UTextBlock* _score_current = nullptr;
+
 public:
+	void UIMainTickUpdate(const int32 i_score_current);
+
 	void UIMainObstacleWallTap();
 
 	void UIMainChanceJumpFever();
@@ -44,5 +55,8 @@ public:
 
 	void UIMainShotStart();
 	void UIMainGameRestart();
-	void UIMainGameOver();
+	void UIMainGameOver(const FInfoGame& s_info_game);
+
+	void UIMainSetScoreBest(const int32 i_score_best);
+	void UIMainObtainGem(const int32 i_gem);
 };

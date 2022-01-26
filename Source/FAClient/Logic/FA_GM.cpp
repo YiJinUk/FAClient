@@ -100,7 +100,7 @@ void AFA_GM::GMInit()
 	GameLoad();
 
 	/*플레이어컨트롤러 초기화*/
-	_pc->PCInit(this);
+	_pc->PCInit(this, _info_game);
 }
 
 void AFA_GM::Tick(float DeltaTime)
@@ -131,6 +131,8 @@ void AFA_GM::Tick(float DeltaTime)
 		TickCheckMoveFloor();
 
 		TickCheckGameOver();
+
+		TickUIUpdate();
 	}
 }
 
@@ -197,6 +199,11 @@ void AFA_GM::TickCheckGameOver()
 	}
 }
 
+void AFA_GM::TickUIUpdate()
+{
+	_pc->PCUITickUpdate(_player->GetActorLocation().X - _player_base_location.X);
+}
+
 void AFA_GM::GameRestart()
 {
 	/*플레이어 캐릭터 초기화*/
@@ -234,7 +241,7 @@ void AFA_GM::GameOver()
 	}
 	
 	GameSave();
-	_pc->PCGameOver();
+	_pc->PCGameOver(_info_game);
 }
 
 void AFA_GM::ShotPlayer()
@@ -266,6 +273,9 @@ void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap)
 	case EObjectType::GEM:
 		//_manager_pool->PoolInObject(obj_overlap);
 		obj_overlap->SetActorLocation(FVector(-1000.f, 0.f, -1000.f));
+
+		_info_game.gem += 1;
+		_pc->PCUIObtainGem(_info_game.gem);
 		break;
 	default:
 		break;

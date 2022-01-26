@@ -10,19 +10,24 @@ AFA_PC::AFA_PC()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AFA_PC::PCInit(AFA_GM* fagm)
+void AFA_PC::PCInit(AFA_GM* fagm, const FInfoGame& s_info_game)
 {
 	_fagm = fagm;
 
 	PCBPInit();
 
 	_ui_main = PCCreateWidgetMain();
-	_ui_main->UIMainInit();
+	_ui_main->UIMainInit(s_info_game);
 }
 
 void AFA_PC::PCUIObstacleWallTap()
 {
 	_ui_main->UIMainObstacleWallTap();
+}
+
+void AFA_PC::PCUITickUpdate(const int32 i_score_current)
+{
+	_ui_main->UIMainTickUpdate(i_score_current);
 }
 
 void AFA_PC::PCUIChanceJumpFever()
@@ -49,7 +54,12 @@ void AFA_PC::PCGameRestart()
 	_fagm->GameRestart();
 	_ui_main->UIMainGameRestart();
 }
-void AFA_PC::PCGameOver()
+void AFA_PC::PCGameOver(const FInfoGame& s_info_game)
 {
-	_ui_main->UIMainGameOver();
+	_ui_main->UIMainGameOver(s_info_game);
+}
+
+void AFA_PC::PCUIObtainGem(const int32 i_gem)
+{
+	_ui_main->UIMainObtainGem(i_gem);
 }

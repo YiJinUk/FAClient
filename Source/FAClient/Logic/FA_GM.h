@@ -57,6 +57,7 @@ protected:
 private:
 	void TickCheckMoveFloor();
 	void TickCheckGameOver();
+	void TickUIUpdate();
 #pragma endregion
 
 #pragma region Manager

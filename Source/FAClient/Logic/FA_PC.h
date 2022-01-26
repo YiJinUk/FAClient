@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ReadOnly/FA_SharedStruct.h"
 #include "GameFramework/PlayerController.h"
 #include "FA_PC.generated.h"
 
@@ -21,7 +22,7 @@ class FACLIENT_API AFA_PC : public APlayerController
 protected:
 	AFA_PC();
 public:
-	void PCInit(AFA_GM* fagm);
+	void PCInit(AFA_GM* fagm, const FInfoGame& s_info_game);
 private:
 	UPROPERTY()
 		AFA_GM* _fagm = nullptr;
@@ -29,8 +30,6 @@ private:
 
 #pragma region Game
 public:
-	void PCUIObstacleWallTap();
-
 	void PCFeverSuccess();
 	void PCFeverFailed();
 
@@ -40,9 +39,14 @@ public:
 
 #pragma region UI
 public:
-	void PCGameOver();
+	void PCUITickUpdate(const int32 i_score_current);
 
+	void PCGameOver(const FInfoGame& s_info_game);
+
+	void PCUIObstacleWallTap();
 	void PCUIChanceJumpFever();
+
+	void PCUIObtainGem(const int32 i_gem);
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
 		void PCBPInit();
