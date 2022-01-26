@@ -20,7 +20,7 @@ void AFA_Manager_SaveLoad::LoadStart(FInfoGame& s_info_game)
 	UFA_SG_Game* save_file_game = Cast<UFA_SG_Game>(UGameplayStatics::LoadGameFromSlot("SG_Game", 0));
 	if (save_file_game)
 	{
-		s_info_game.best_score = save_file_game->best_score;
+		s_info_game.score_best = save_file_game->score_best;
 		s_info_game.gem = save_file_game->gem;
 	}
 	else
@@ -29,7 +29,7 @@ void AFA_Manager_SaveLoad::LoadStart(FInfoGame& s_info_game)
 		//USA_GI* sagi = GetWorld()->GetGameInstance<USA_GI>();
 		//const FDataGame* s_data_game = sagi->GetDataGame();
 
-		s_info_game.best_score = 0;
+		s_info_game.score_best = 0;
 		s_info_game.gem = 0;
 	}
 }

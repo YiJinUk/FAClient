@@ -225,9 +225,14 @@ public:
 	UPROPERTY()
 		EGameStatus game_status = EGameStatus::TITLE;
 	UPROPERTY()
-		int32 best_score = 0;
+		int32 score_best = 0;
+	UPROPERTY()
+		int32 score_current = 0;
 	UPROPERTY()
 		int32 gem = 0;
+	//이번 게임에서 얻은 gem갯수 입니다
+	UPROPERTY()
+		int32 gem_add = 0;
 };
 
 USTRUCT(BlueprintType)

@@ -8,6 +8,7 @@
 #include "FA_UI_Main.generated.h"
 
 class UFA_UI_GameStart;
+class UFA_UI_GameOver;
 class UFA_UI_Fever;
 class UWidgetSwitcher;
 class UTextBlock;
@@ -34,6 +35,8 @@ private:
 		UWidgetSwitcher* _switcher = nullptr;
 	UPROPERTY(Meta = (BindWidget))
 		UFA_UI_GameStart* _game_start = nullptr;
+	UPROPERTY(Meta = (BindWidget))
+		UFA_UI_GameOver* _game_over = nullptr;
 	UPROPERTY(Meta = (BindWidget))
 		UFA_UI_Fever* _fever = nullptr;
 

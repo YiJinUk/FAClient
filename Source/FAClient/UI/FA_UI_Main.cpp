@@ -3,6 +3,7 @@
 
 #include "UI/FA_UI_Main.h"
 #include "FA_UI_GameStart.h"
+#include "FA_UI_GameOver.h"
 #include "FA_UI_Fever.h"
 
 #include "Components/WidgetSwitcher.h"
@@ -13,7 +14,7 @@ void UFA_UI_Main::UIMainInit(const FInfoGame& s_info_game)
 	_game_start->UIGameStartInit();
 	_switcher->SetActiveWidgetIndex(1);
 
-	_score_best->SetText(FText::AsNumber(s_info_game.best_score));
+	_score_best->SetText(FText::AsNumber(s_info_game.score_best));
 	_gem->SetText(FText::AsNumber(s_info_game.gem));
 }
 
@@ -52,8 +53,9 @@ void UFA_UI_Main::UIMainGameRestart()
 }
 void UFA_UI_Main::UIMainGameOver(const FInfoGame& s_info_game)
 {
+	_game_over->UIGameOverUpdate(s_info_game);
 	_switcher->SetActiveWidgetIndex(2);
-	_score_best->SetText(FText::AsNumber(s_info_game.best_score));
+	_score_best->SetText(FText::AsNumber(s_info_game.score_best));
 }
 
 void UFA_UI_Main::UIMainSetScoreBest(const int32 i_score_best)

@@ -141,59 +141,62 @@ void AFA_GM::Tick(float DeltaTime)
 
 		TickCheckGameOver();
 
+		_info_game.score_current = _player->GetActorLocation().X - _player_base_location.X;
+
 		TickUIUpdate();
 	}
 }
 
 void AFA_GM::TickCheckMoveFloor()
 {
-	if (_player->GetActorLocation().X - _pre_spawn_plane_loc_x >= _data_game_cache->GetPlaneLength())
+	int32 i_distance_player_plane = _player->GetActorLocation().X - _pre_spawn_plane_loc_x;
+	if (i_distance_player_plane >= _data_game_cache->GetPlaneLength())
 	{
-		/*바닥 이동*/
-		++_plane_move_count;
-		++_plane_index_move;
-
-		/*이동해야할 바닥위치값을 구합니다*/
-		_pre_spawn_plane_loc_x = _player->GetActorLocation().X;
-
-		if (_plane_index_move >= _data_game_cache->GetPlaneBaseSpawnCount())
-			_plane_index_move = 0;
-
-		/*이동해야할 바닥이 오브젝트를 가지고 있다면 풀링합니다*/
-		AFA_Plane* plane = _spawn_planes[_plane_index_move];
-		if (plane->GetSpawnObject())
+		int32 i_count = (i_distance_player_plane / _data_game_cache->GetPlaneLength());
+		UFA_FunctionLibrary::GPrintString(111, 2, "count : " + FString::FromInt(i_count));
+		for (int32 i = 0; i < i_count; ++i)
 		{
-			//for (int32 i = _spawn_objects.Num() - 1; i >= 0; --i)
-			//{
-			//	if (_spawn_objects[i]->GetInfoObject().id == plane->GetSpawnObject()->GetInfoObject().id)
-			//		_spawn_objects.RemoveAtSwap(i);
-			//}
-			_manager_pool->PoolInObject(plane->GetSpawnObject());
-		}
+			/*바닥 이동*/
+			++_plane_move_count;
+			++_plane_index_move;
 
-		/*Gem이 있다면 풀링합니다*/
-		TArray<AFA_Object*, TInlineAllocator<30>>& spawn_gems = plane->GetSpawnGems();
-		if (spawn_gems.Num() >= 1)
-		{
-			for (AFA_Object* gem : spawn_gems)
+			/*이동해야할 바닥위치값을 구합니다*/
+			_pre_spawn_plane_loc_x = _player->GetActorLocation().X;
+
+			if (_plane_index_move >= _data_game_cache->GetPlaneBaseSpawnCount())
+				_plane_index_move = 0;
+
+			/*이동해야할 바닥이 오브젝트를 가지고 있다면 풀링합니다*/
+			AFA_Plane* plane = _spawn_planes[_plane_index_move];
+			if (plane->GetSpawnObject())
 			{
-				_manager_pool->PoolInObject(gem);
+				_manager_pool->PoolInObject(plane->GetSpawnObject());
 			}
-			spawn_gems.Empty(30);
-		}
 
-		/*새로운 오브젝트 생성*/
-		AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
-		object_spawn->ObjectInit(IdGenerator());
-		//_spawn_objects.Add(object_spawn);
+			/*Gem이 있다면 풀링합니다*/
+			TArray<AFA_Object*, TInlineAllocator<30>>& spawn_gems = plane->GetSpawnGems();
+			if (spawn_gems.Num() >= 1)
+			{
+				for (AFA_Object* gem : spawn_gems)
+				{
+					_manager_pool->PoolInObject(gem);
+				}
+				spawn_gems.Empty(30);
+			}
 
-		/*이동해야할 바닥 초기화*/
-		plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
+			/*새로운 오브젝트 생성*/
+			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
+			object_spawn->ObjectInit(IdGenerator());
+			//_spawn_objects.Add(object_spawn);
 
-		/*오브젝트가 찬스라면 Gem도 생성합니다*/
-		if (object_spawn->GetInfoObject().obj_type == EObjectType::JUMP)
-		{
-			SpawnGem(plane);
+			/*이동해야할 바닥 초기화*/
+			plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
+
+			/*오브젝트가 찬스라면 Gem도 생성합니다*/
+			if (object_spawn->GetInfoObject().obj_type == EObjectType::JUMP)
+			{
+				SpawnGem(plane);
+			}
 		}
 	}
 
@@ -210,7 +213,7 @@ void AFA_GM::TickCheckGameOver()
 
 void AFA_GM::TickUIUpdate()
 {
-	_pc->PCUITickUpdate(_player->GetActorLocation().X - _player_base_location.X);
+	_pc->PCUITickUpdate(_info_game.score_current);
 }
 
 void AFA_GM::GameRestart()
@@ -233,15 +236,17 @@ void AFA_GM::GameRestart()
 	_plane_index_move = -1;
 	_plane_move_count = -1;
 	_pre_spawn_plane_loc_x = _player_base_location.X;
+	_info_game.score_current = 0;
+	_info_game.gem_add = 0;
 	_info_game.game_status = EGameStatus::TITLE;
 }
 void AFA_GM::GameOver()
 {
 	_info_game.game_status = EGameStatus::GAMEOVER;
-	if (_info_game.best_score < _player->GetActorLocation().X)
+	if (_info_game.score_best < _player->GetActorLocation().X)
 	{
 		/*신기록 달성*/
-		_info_game.best_score = _player->GetActorLocation().X;
+		_info_game.score_best = _info_game.score_current;
 		_info_game.gem += 1;
 	}
 	else
@@ -286,6 +291,8 @@ void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap)
 		obj_overlap->SetActorLocation(FVector(-1000.f, 0.f, -1000.f));
 
 		_info_game.gem += 1;
+		_info_game.gem_add += 1;
+
 		_pc->PCUIObtainGem(_info_game.gem);
 		break;
 	default:

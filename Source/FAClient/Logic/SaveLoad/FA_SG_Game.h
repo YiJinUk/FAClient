@@ -19,7 +19,7 @@ public:
 	void SGSaveData(FInfoGame& s_info_game);
 public:
 	UPROPERTY()
-		int32 best_score = 0;
+		int32 score_best = 0;
 	UPROPERTY()
 		int32 gem = 0;
 };
