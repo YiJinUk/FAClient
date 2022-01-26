@@ -47,6 +47,12 @@ enum class EVFXType : uint8
 {
 	GEM,
 };
+UENUM()
+enum class ESFXType : uint8
+{
+	BACKGROUND,
+	GEM,
+};
 
 USTRUCT(BlueprintType)
 struct FDataObjectProb
@@ -192,6 +198,22 @@ protected:
 public:
 	FORCEINLINE UParticleSystem* GetObtainGem() { return _obtain_gem; }
 };
+
+USTRUCT(BlueprintType)
+struct FDataSFX : public FTableRowBase
+{
+	GENERATED_BODY()
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
+		USoundBase* _background = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
+		USoundBase* _obtain_gem = nullptr;
+
+public:
+	FORCEINLINE USoundBase* GetBackGround() { return _background; }
+	FORCEINLINE USoundBase* GetObtainGem() { return _obtain_gem; }
+};
+
 
 
 USTRUCT(BlueprintType)

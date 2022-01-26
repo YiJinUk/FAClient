@@ -72,6 +72,7 @@ void AFA_GM::GMInit()
 
 	_manager_pool->PoolInit(_fagi);
 	_manager_vfx->VFXInit(_fagi);
+	_manager_sfx->SFXInit(_fagi);
 
 	/*오브젝트 생성확률 초기화*/
 	for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbObstacles())
@@ -103,6 +104,9 @@ void AFA_GM::GMInit()
 
 	/*세이브파일 로드*/
 	GameLoad();
+
+	/*SFX 초기화*/
+	_manager_sfx->SFXStart(ESFXType::BACKGROUND);
 
 	/*플레이어컨트롤러 초기화*/
 	_pc->PCInit(this, _info_game);
@@ -277,6 +281,7 @@ void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap)
 		break;
 	case EObjectType::GEM:
 		_manager_vfx->VFXStart(EVFXType::GEM, obj_overlap->GetActorLocation());
+		_manager_sfx->SFXStart(ESFXType::GEM);
 
 		obj_overlap->SetActorLocation(FVector(-1000.f, 0.f, -1000.f));
 

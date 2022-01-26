@@ -15,6 +15,8 @@ UFA_GI::UFA_GI()
 	if (DT_OBJECT.Succeeded()) _dt_object = DT_OBJECT.Object;
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_VFX(TEXT("/Game/FAContent/ReadOnly/Data/FADT_VFX.FADT_VFX"));
 	if (DT_VFX.Succeeded()) _dt_vfx = DT_VFX.Object;
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_SFX(TEXT("/Game/FAContent/ReadOnly/Data/FADT_SFX.FADT_SFX"));
+	if (DT_SFX.Succeeded()) _dt_sfx = DT_SFX.Object;
 }
 
 void UFA_GI::GIInit()
@@ -37,6 +39,12 @@ FDataVFX* UFA_GI::FindDataVFXByCode(const FString& str_code_vfx)
 	if (!_dt_vfx) return nullptr;
 	return _dt_vfx->FindRow<FDataVFX>(*str_code_vfx, "0");
 }
+FDataSFX* UFA_GI::FindDataSFXByCode(const FString& str_code_sfx)
+{
+	if (!_dt_sfx) return nullptr;
+	return _dt_sfx->FindRow<FDataSFX>(*str_code_sfx, "0");
+}
+
 
 int32 UFA_GI::GetRandomByInt(const int32 i_min, const int32 i_max)
 {
