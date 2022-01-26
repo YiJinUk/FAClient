@@ -100,8 +100,8 @@ public:
 private:
 	const FString CalcSpawnObjectCode();
 private:
-	UPROPERTY()
-		TArray<AFA_Object*> _spawn_objects;
+	//UPROPERTY()
+		//TArray<AFA_Object*> _spawn_objects;
 
 	UPROPERTY()
 		TArray<FString> _prob_obstacles;

@@ -152,11 +152,11 @@ void AFA_GM::TickCheckMoveFloor()
 		AFA_Plane* plane = _spawn_planes[_plane_index_move];
 		if (plane->GetSpawnObject())
 		{
-			for (int32 i = _spawn_objects.Num() - 1; i >= 0; --i)
-			{
-				if (_spawn_objects[i]->GetInfoObject().id == plane->GetSpawnObject()->GetInfoObject().id)
-					_spawn_objects.RemoveAtSwap(i);
-			}
+			//for (int32 i = _spawn_objects.Num() - 1; i >= 0; --i)
+			//{
+			//	if (_spawn_objects[i]->GetInfoObject().id == plane->GetSpawnObject()->GetInfoObject().id)
+			//		_spawn_objects.RemoveAtSwap(i);
+			//}
 			_manager_pool->PoolInObject(plane->GetSpawnObject());
 		}
 
@@ -174,7 +174,7 @@ void AFA_GM::TickCheckMoveFloor()
 		/*새로운 오브젝트 생성*/
 		AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
 		object_spawn->ObjectInit(IdGenerator());
-		_spawn_objects.Add(object_spawn);
+		//_spawn_objects.Add(object_spawn);
 
 		/*이동해야할 바닥 초기화*/
 		plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
@@ -203,12 +203,12 @@ void AFA_GM::GameRestart()
 	_player->PlayerMovementSetActive(false);
 	_player->SetActorLocation(_player_base_location);
 
-	/*오브젝트 풀링*/
-	for (AFA_Object* object : _spawn_objects)
-	{
-		_manager_pool->PoolInObject(object);
-	}
-	_spawn_objects.Empty(50);
+	///*오브젝트 풀링*/
+	//for (AFA_Object* object : _spawn_objects)
+	//{
+	//	_manager_pool->PoolInObject(object);
+	//}
+	//_spawn_objects.Empty(50);
 
 	/*바닥 풀링*/
 	PlaneInitLocation();
@@ -264,7 +264,8 @@ void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap)
 		ChanceJumpFeverTimingStart();
 		break;
 	case EObjectType::GEM:
-		_manager_pool->PoolInObject(obj_overlap);
+		//_manager_pool->PoolInObject(obj_overlap);
+		obj_overlap->SetActorLocation(FVector(-1000.f, 0.f, -1000.f));
 		break;
 	default:
 		break;
@@ -382,12 +383,18 @@ void AFA_GM::PlaneInitLocation()
 			spawn_gems.Empty(30);
 		}
 
+		/*바닥이 오브젝트를 가지고 있다면 오브젝트를 풀링합니다*/
+		if (plane->GetSpawnObject())
+		{
+			_manager_pool->PoolInObject(plane->GetSpawnObject());
+		}
+
 		if (i >= _data_game_cache->GetPlaneBaseSpawnObject())
 		{
 			/*새로운 오브젝트 생성*/
 			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
 			object_spawn->ObjectInit(IdGenerator());
-			_spawn_objects.Add(object_spawn);
+			//_spawn_objects.Add(object_spawn);
 
 			/*이동해야할 바닥 초기화*/
 			plane->PlaneSpawn(FVector(_plane_move_count * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);

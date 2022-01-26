@@ -8,6 +8,7 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/RotatingMovementComponent.h"
 
 AFA_Gem::AFA_Gem()
 {
@@ -22,11 +23,13 @@ AFA_Gem::AFA_Gem()
 		_sm->SetupAttachment(_box);
 		_sm->SetGenerateOverlapEvents(false);
 		_sm->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
+		_sm->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	}
+
+	_rotating_movement = CreateDefaultSubobject<URotatingMovementComponent>("_rotating_movement");
 }
 
 void AFA_Gem::OnBoxOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UFA_FunctionLibrary::GPrintString(123, 2, "Gem Overlap");
 	_fagm->ObjectOverlap(this);
 }
