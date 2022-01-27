@@ -52,6 +52,9 @@ enum class ESFXType : uint8
 {
 	BACKGROUND,
 	GEM,
+	POWER,
+	JUMP,
+	FEVER,
 };
 
 USTRUCT(BlueprintType)
@@ -83,6 +86,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Player")
 		int32 _player_camera_max_location_z = 0;
 
+	UPROPERTY(EditAnywhere, Category = "PlayerPower")
+		int32 _player_power_cost = 0;
+	UPROPERTY(EditAnywhere, Category = "PlayerPower")
+		int32 _player_power_count_max = 0;
+
 	UPROPERTY(EditAnywhere, Category = "Plane")
 		int32 _plane_base_spawn_count = 5;
 	UPROPERTY(EditAnywhere, Category = "Plane")
@@ -111,7 +119,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Chance")
 		float _chance_jump_add_velocity_z = 0.f;
 	UPROPERTY(EditAnywhere, Category = "Chance")
-		float _chance_jump_add_fever = 0.f;
+		float _chance_jump_fever_add_speed = 0.f;
+	UPROPERTY(EditAnywhere, Category = "Chance")
+		float _chance_jump_fever_add_velocity_z = 0.f;
 	//점프대에 닿았을때 변수시간안에 탭해야 피버가 발동합니다
 	UPROPERTY(EditAnywhere, Category = "Chance")
 		float _chance_jump_fever_timing = 2.f;
@@ -130,7 +140,9 @@ public:
 	FORCEINLINE const FVector GetPlayerBaseAngle() const { return _player_base_angle; }
 	FORCEINLINE const int32 GetPlayerBaseMaxPower() const { return _player_base_max_power; }
 	FORCEINLINE const int32 GetPlayerCameraMaxLocationZ() const { return _player_camera_max_location_z; }
-
+	FORCEINLINE const int32 GetPlayerPowerCost() const { return _player_power_cost; }
+	FORCEINLINE const int32 GetPlayerPowerCountMax() const { return _player_power_count_max; }
+	
 	FORCEINLINE const int32 GetPlaneBaseSpawnCount() const { return _plane_base_spawn_count; }
 	FORCEINLINE const int32 GetPlaneBaseSpawnObject() const { return _plane_base_spawn_object; }
 	FORCEINLINE const int32 GetPlaneLength() const { return _plane_length; }
@@ -146,7 +158,8 @@ public:
 
 	FORCEINLINE const float GetChanceJumpAddSpeed() const { return _chance_jump_add_speed; }
 	FORCEINLINE const float GetChanceJumpAddVelocityZ() const { return _chance_jump_add_velocity_z; }
-	FORCEINLINE const float GetChanceJumpAddFever() const { return _chance_jump_add_fever; }
+	FORCEINLINE const float GetChanceJumpFeverAddSpeed() const { return _chance_jump_fever_add_speed; }
+	FORCEINLINE const float GetChanceJumpFeverAddVelocityZ() const { return _chance_jump_fever_add_velocity_z; }
 	FORCEINLINE const float GetChanceJumpFeverTiming() const { return _chance_jump_fever_timing; }
 	FORCEINLINE const float GetChanceJumpFeverSlotRate() const { return _chance_jump_fever_slow_rate; }
 
@@ -206,12 +219,23 @@ struct FDataSFX : public FTableRowBase
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
 		USoundBase* _background = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
 		USoundBase* _obtain_gem = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+		USoundBase* _power = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+		USoundBase* _jump = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+		USoundBase* _fever = nullptr;
 
 public:
 	FORCEINLINE USoundBase* GetBackGround() { return _background; }
+
 	FORCEINLINE USoundBase* GetObtainGem() { return _obtain_gem; }
+	FORCEINLINE USoundBase* GetPower() { return _power; }
+	FORCEINLINE USoundBase* GetJump() { return _jump; }
+	FORCEINLINE USoundBase* GetFever() { return _fever; }
 };
 
 
@@ -243,6 +267,8 @@ struct FInfoPlayer
 public:
 	UPROPERTY()
 		int32 max_velocity_z = 0;
+	UPROPERTY()
+		int32 power_count_current = 0;
 };
 
 USTRUCT(BlueprintType)

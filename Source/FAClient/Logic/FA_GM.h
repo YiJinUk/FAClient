@@ -151,6 +151,7 @@ public:
 	/*게임초반 플레이어를 날립니다*/
 	UFUNCTION(BlueprintCallable)
 		void ShotPlayer();
+	void PlayerPowerStart();
 
 	void SetPowerProgressMaterial(UMaterialInstanceDynamic* mid_power_progress);
 private:

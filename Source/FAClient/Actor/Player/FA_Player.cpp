@@ -75,18 +75,19 @@ void AFA_Player::PlayerMovementJump(const float f_add_speed, const float f_add_v
 {
 	const FVector& v_velocity = _projectile_movement->Velocity;
 	//UFA_FunctionLibrary::GPrintString(5, 5, "old : "+_projectile_movement->Velocity.ToString());
-	if (_info_player.max_velocity_z <= 0)
-	{
-		_info_player.max_velocity_z = 500;
-		_projectile_movement->SetVelocityInLocalSpace(FVector(v_velocity.X, 0.f, _info_player.max_velocity_z));
-	}
-	else
-	{
-		_info_player.max_velocity_z = _info_player.max_velocity_z * f_add_velocty_z;
-		if (_info_player.max_velocity_z < 500)
-			_info_player.max_velocity_z = 500;
-		_projectile_movement->SetVelocityInLocalSpace(FVector(v_velocity.X * f_add_speed, 0.f, _info_player.max_velocity_z));
-	}
+	//if (_info_player.max_velocity_z <= 0)
+	//{
+	//	_info_player.max_velocity_z = 500;
+	//	_projectile_movement->SetVelocityInLocalSpace(FVector(v_velocity.X, 0.f, _info_player.max_velocity_z));
+	//}
+	//else
+	//{
+	//	_info_player.max_velocity_z = _info_player.max_velocity_z * f_add_velocty_z;
+	//	if (_info_player.max_velocity_z < 500)
+	//		_info_player.max_velocity_z = 500;
+	//	_projectile_movement->SetVelocityInLocalSpace(FVector(v_velocity.X * f_add_speed, 0.f, _info_player.max_velocity_z));
+	//}
+	_projectile_movement->SetVelocityInLocalSpace(FVector((v_velocity.X + 500.f) * f_add_speed, 0.f, (_info_player.max_velocity_z + 500) * f_add_velocty_z));
 	
 	//UFA_FunctionLibrary::GPrintString(2, 5, "new : "+_projectile_movement->Velocity.ToString());
 }

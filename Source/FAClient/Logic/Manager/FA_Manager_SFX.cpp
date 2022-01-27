@@ -22,6 +22,15 @@ void AFA_Manager_SFX::SFXStart(const ESFXType e_sfx_type)
 	case ESFXType::GEM:
 		UGameplayStatics::SpawnSound2D(GetWorld(), _data_sfx_cache->GetObtainGem());
 		break;
+	case ESFXType::POWER:
+		UGameplayStatics::SpawnSound2D(GetWorld(), _data_sfx_cache->GetPower());
+		break;
+	case ESFXType::JUMP:
+		UGameplayStatics::SpawnSound2D(GetWorld(), _data_sfx_cache->GetJump());
+		break;
+	case ESFXType::FEVER:
+		UGameplayStatics::SpawnSound2D(GetWorld(), _data_sfx_cache->GetFever());
+		break;
 	default:
 		break;
 	}

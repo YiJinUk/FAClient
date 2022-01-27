@@ -4,6 +4,7 @@
 #include "UI/FA_UI_Main.h"
 #include "FA_UI_GameStart.h"
 #include "FA_UI_GameOver.h"
+#include "FA_UI_GamePlay.h"
 #include "FA_UI_Fever.h"
 
 #include "Components/WidgetSwitcher.h"
@@ -12,6 +13,7 @@
 void UFA_UI_Main::UIMainInit(const FInfoGame& s_info_game)
 {
 	_game_start->UIGameStartInit();
+	_game_play->UIGamePlayPostInit();
 	_switcher->SetActiveWidgetIndex(1);
 
 	_score_best->SetText(FText::AsNumber(s_info_game.score_best));
@@ -25,7 +27,7 @@ void UFA_UI_Main::UIMainTickUpdate(const int32 i_score_current)
 
 void UFA_UI_Main::UIMainObstacleWallTap()
 {
-	_switcher->SetActiveWidgetIndex(4);
+	//_switcher->SetActiveWidgetIndex(4);
 }
 
 void UFA_UI_Main::UIMainChanceJumpFever()
@@ -35,19 +37,26 @@ void UFA_UI_Main::UIMainChanceJumpFever()
 }
 void UFA_UI_Main::UIMainFeverSuccess()
 {
-	_switcher->SetActiveWidgetIndex(0);
+	_switcher->SetActiveWidgetIndex(4);
 }
 void UFA_UI_Main::UIMainFeverFailed()
 {
-	_switcher->SetActiveWidgetIndex(0);
+	_switcher->SetActiveWidgetIndex(4);
 }
 
 void UFA_UI_Main::UIMainShotStart()
 {
-	_switcher->SetActiveWidgetIndex(0);
+	_switcher->SetActiveWidgetIndex(4);
 }
+void UFA_UI_Main::UIMainPowerStart(const FInfoGame& s_info_game, const FInfoPlayer& s_info_player)
+{
+	_gem->SetText(FText::AsNumber(s_info_game.gem));
+	_game_play->UIGamePlayPowerStart(s_info_player);
+}
+
 void UFA_UI_Main::UIMainGameRestart()
 {
+	_game_play->UIGamePlayInit();
 	_switcher->SetActiveWidgetIndex(1);
 	_score_current->SetText(FText::AsNumber(0));
 }

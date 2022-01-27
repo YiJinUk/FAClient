@@ -33,3 +33,8 @@ void AFA_Gem::OnBoxOverlap(class UPrimitiveComponent* OverlappedComp, class AAct
 {
 	_fagm->ObjectOverlap(this);
 }
+
+void AFA_Gem::ObjectSetPoolActiveChild(const bool b_is_active)
+{
+	_rotating_movement->SetActive(b_is_active);
+}

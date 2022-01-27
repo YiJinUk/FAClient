@@ -34,6 +34,8 @@ public:
 	void PCFeverFailed();
 
 	void PCShotStart();
+	void PCPowerStart(const FInfoGame& s_info_game, const FInfoPlayer& s_info_player);
+
 	void PCGameRestart();
 #pragma endregion
 

@@ -49,6 +49,11 @@ void AFA_PC::PCShotStart()
 	_ui_main->UIMainShotStart();
 	_fagm->ShotPlayer();
 }
+void AFA_PC::PCPowerStart(const FInfoGame& s_info_game, const FInfoPlayer& s_info_player)
+{
+	_ui_main->UIMainPowerStart(s_info_game, s_info_player);
+}
+
 void AFA_PC::PCGameRestart()
 {
 	_fagm->GameRestart();

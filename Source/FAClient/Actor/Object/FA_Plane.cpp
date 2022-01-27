@@ -23,10 +23,10 @@ void AFA_Plane::PlaneInit(const FVector& v_loc)
 void AFA_Plane::PlaneSpawn(const FVector& v_loc, AFA_Object* object_spawn)
 {
 	SetActorLocation(v_loc);
-	if (object_spawn)
+	_spawn_object = object_spawn;
+	if (_spawn_object)
 	{
-		object_spawn->SetActorLocation(_spawn_object_location->GetComponentLocation());
-		_spawn_object = object_spawn;
+		_spawn_object->SetActorLocation(_spawn_object_location->GetComponentLocation());
 	}
 }
 

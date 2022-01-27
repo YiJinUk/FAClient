@@ -10,6 +10,7 @@
 class UFA_UI_GameStart;
 class UFA_UI_GameOver;
 class UFA_UI_Fever;
+class UFA_UI_GamePlay;
 class UWidgetSwitcher;
 class UTextBlock;
 
@@ -29,7 +30,7 @@ private:
 	* index 1 : GameStart
 	* index 2 : GameOver
 	* index 3 : JumpFever
-	* index 4 : WallTap
+	* index 4 : GamePlay
 	*/
 	UPROPERTY(Meta = (BindWidget))
 		UWidgetSwitcher* _switcher = nullptr;
@@ -39,6 +40,8 @@ private:
 		UFA_UI_GameOver* _game_over = nullptr;
 	UPROPERTY(Meta = (BindWidget))
 		UFA_UI_Fever* _fever = nullptr;
+	UPROPERTY(Meta = (BindWidget))
+		UFA_UI_GamePlay* _game_play = nullptr;
 
 	UPROPERTY(Meta = (BindWidget))
 		UTextBlock* _gem = nullptr;
@@ -57,6 +60,8 @@ public:
 	void UIMainFeverFailed();
 
 	void UIMainShotStart();
+	void UIMainPowerStart(const FInfoGame& s_info_game, const FInfoPlayer& s_info_player);
+
 	void UIMainGameRestart();
 	void UIMainGameOver(const FInfoGame& s_info_game);
 

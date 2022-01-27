@@ -101,6 +101,7 @@ void AFA_GM::GMInit()
 	/*플레이어 초기화*/
 	_player_base_location = _player->GetActorLocation();
 	_pre_spawn_plane_loc_x = _player_base_location.X;
+	_player->GetInfoPlayer().power_count_current = _data_game_cache->GetPlayerPowerCountMax();
 
 	/*세이브파일 로드*/
 	GameLoad();
@@ -153,7 +154,7 @@ void AFA_GM::TickCheckMoveFloor()
 	if (i_distance_player_plane >= _data_game_cache->GetPlaneLength())
 	{
 		int32 i_count = (i_distance_player_plane / _data_game_cache->GetPlaneLength());
-		UFA_FunctionLibrary::GPrintString(111, 2, "count : " + FString::FromInt(i_count));
+		_pre_spawn_plane_loc_x += _data_game_cache->GetPlaneLength() * i_count;
 		for (int32 i = 0; i < i_count; ++i)
 		{
 			/*바닥 이동*/
@@ -161,7 +162,6 @@ void AFA_GM::TickCheckMoveFloor()
 			++_plane_index_move;
 
 			/*이동해야할 바닥위치값을 구합니다*/
-			_pre_spawn_plane_loc_x = _player->GetActorLocation().X;
 
 			if (_plane_index_move >= _data_game_cache->GetPlaneBaseSpawnCount())
 				_plane_index_move = 0;
@@ -187,7 +187,6 @@ void AFA_GM::TickCheckMoveFloor()
 			/*새로운 오브젝트 생성*/
 			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
 			object_spawn->ObjectInit(IdGenerator());
-			//_spawn_objects.Add(object_spawn);
 
 			/*이동해야할 바닥 초기화*/
 			plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
@@ -221,13 +220,7 @@ void AFA_GM::GameRestart()
 	/*플레이어 캐릭터 초기화*/
 	_player->PlayerMovementSetActive(false);
 	_player->SetActorLocation(_player_base_location);
-
-	///*오브젝트 풀링*/
-	//for (AFA_Object* object : _spawn_objects)
-	//{
-	//	_manager_pool->PoolInObject(object);
-	//}
-	//_spawn_objects.Empty(50);
+	_player->GetInfoPlayer().power_count_current = _data_game_cache->GetPlayerPowerCountMax();
 
 	/*바닥 풀링*/
 	PlaneInitLocation();
@@ -266,6 +259,21 @@ void AFA_GM::ShotPlayer()
 	_info_game.game_status = EGameStatus::PLAY;
 }
 
+void AFA_GM::PlayerPowerStart()
+{
+	//if (_player->GetInfoPlayer().power_count_current >= _data_game_cache->GetPlayerPowerCountMax()) return;
+	if (_player->GetInfoPlayer().power_count_current <= 0) return;
+	if (_info_game.gem < _data_game_cache->GetPlayerPowerCost()) return;
+
+	--_player->GetInfoPlayer().power_count_current;
+	_info_game.gem -= _data_game_cache->GetPlayerPowerCost();
+	_manager_sfx->SFXStart(ESFXType::POWER);
+
+	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpFeverAddSpeed(), _data_game_cache->GetChanceJumpFeverAddVelocityZ());
+
+	_pc->PCPowerStart(_info_game, _player->GetInfoPlayer());
+}
+
 void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap)
 {
 	if (!obj_overlap) return;
@@ -273,7 +281,8 @@ void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap)
 	switch (obj_overlap->GetInfoObject().obj_type)
 	{
 	case EObjectType::TRAP:
-		_player->PlayerAddSpeed(_data_game_cache->GetObstacleTrapAddSpeed());
+		//_player->PlayerAddSpeed(_data_game_cache->GetObstacleTrapAddSpeed());
+		_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
 		break;
 	case EObjectType::WALL:
 		//ObstacleWallTapTimingStart();
@@ -339,6 +348,8 @@ void AFA_GM::TimerChanceJumpFeverFailed()
 
 	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
 
+	_manager_sfx->SFXStart(ESFXType::JUMP);
+
 	_pc->PCFeverFailed();
 }
 
@@ -352,7 +363,9 @@ void AFA_GM::FeverSuccess()
 	//피버종료타이머 취소
 	GetWorldTimerManager().PauseTimer(_timer_TimerChanceJumpFeverFailed);
 
-	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed() * _data_game_cache->GetChanceJumpAddFever(), _data_game_cache->GetChanceJumpAddVelocityZ() * _data_game_cache->GetChanceJumpAddFever());
+	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpFeverAddSpeed(), _data_game_cache->GetChanceJumpFeverAddVelocityZ());
+
+	_manager_sfx->SFXStart(ESFXType::FEVER);
 }
 
 void AFA_GM::SpawnGem(AFA_Plane* plane)
