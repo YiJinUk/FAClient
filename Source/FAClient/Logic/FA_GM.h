@@ -16,6 +16,7 @@ class AFA_Manager_SFX;
 class AFA_Manager_VFX;
 class AFA_Plane;
 class AFA_Object;
+class AFA_Trap;
 
 /**
  * 
@@ -103,6 +104,7 @@ private:
 #pragma region Object.Total
 public:
 	void ObjectOverlap(AFA_Object* obj_overlap, const FLinearColor& s_linear_color = FLinearColor());
+	void TrapOverlap(AFA_Trap* trap);
 
 private:
 	const FString CalcSpawnObjectCode();

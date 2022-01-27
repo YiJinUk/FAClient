@@ -18,7 +18,7 @@ AFA_Trap::AFA_Trap()
 
 void AFA_Trap::OnBoxOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	_fagm->ObjectOverlap(this, _color);
+	_fagm->TrapOverlap(this);
 }
 
 void AFA_Trap::ObjectPostInitChild(const FDataObject* s_data_object)
@@ -26,14 +26,13 @@ void AFA_Trap::ObjectPostInitChild(const FDataObject* s_data_object)
 	_mid_color = GetMID();
 }
 
-void AFA_Trap::ObjectInitChild(const FLinearColor& s_linear_color)
+void AFA_Trap::TrapInit(const FLinearColor& s_linear_color, const ERGBType e_rgb_type)
 {
 	_color = s_linear_color;
+	_rgb_type = e_rgb_type;
 	_mid_color->SetVectorParameterValue("Color_1", _color);
 	_mid_color->SetVectorParameterValue("Fresnel_Color", _color);
 }
 
-void AFA_Trap::ObjectSetPoolActiveChild(const bool b_is_active)
-{
-
-}
+const FLinearColor& AFA_Trap::GetColor() { return _color; }
+const ERGBType AFA_Trap::GetRGBType() { return _rgb_type; }

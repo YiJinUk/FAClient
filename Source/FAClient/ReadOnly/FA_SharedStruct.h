@@ -49,6 +49,7 @@ enum class ERGBType : uint8
 	G = 1,
 	B = 2,
 	BLACK = 3,
+	WHITE = 4,
 };
 
 UENUM()
@@ -311,6 +312,8 @@ public:
 		int32 max_velocity_z = 0;
 	UPROPERTY()
 		int32 power_count_current = 0;
+	UPROPERTY()
+		ERGBType rgb_type = ERGBType::WHITE;
 };
 
 USTRUCT(BlueprintType)

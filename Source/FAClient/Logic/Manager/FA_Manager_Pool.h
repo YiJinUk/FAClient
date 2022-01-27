@@ -8,6 +8,7 @@
 
 class UFA_GI;
 class AFA_Plane;
+class AFA_Trap;
 class AFA_Object;
 
 /**
@@ -22,12 +23,15 @@ public:
 
 public:
 	AFA_Plane* PoolGetPlaneByCode(const FString& str_code_plane);
+	AFA_Trap* PoolGetTrapByCode(const FString& str_code_trap);
 	AFA_Object* PoolGetObjectByCode(const FString& str_code_object);
 public:
 	void PoolInPlane(AFA_Plane* plane);
+	void PoolInTrap(AFA_Trap* trap);
 	void PoolInObject(AFA_Object* object);
 private:
 	AFA_Plane* PoolOutPlane(const FString& str_code_plane);
+	AFA_Trap* PoolOutTrap(const FString& str_code_trap);
 	AFA_Object* PoolOutObject(const FString& str_code_object);
 
 private:
@@ -37,5 +41,6 @@ private:
 	FActorSpawnParameters _spawn_param = FActorSpawnParameters();
 
 	TMap<FString, TArray<AFA_Plane*>> _pool_plane;
+	TArray<AFA_Trap*> _pool_trap;
 	TMap<FString, TArray<AFA_Object*>> _pool_object;
 };

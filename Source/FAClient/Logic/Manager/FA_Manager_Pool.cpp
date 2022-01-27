@@ -4,6 +4,7 @@
 #include "Logic/Manager/FA_Manager_Pool.h"
 #include "Logic/FA_GI.h"
 #include "Actor/Object/FA_Plane.h"
+#include "Actor/Object/Obstacle/FA_Trap.h"
 #include "Actor/Object/FA_Object.h"
 
 void AFA_Manager_Pool::PoolInit(UFA_GI* fagi)
@@ -16,6 +17,10 @@ AFA_Plane* AFA_Manager_Pool::PoolGetPlaneByCode(const FString& str_code_plane)
 {
 	return PoolOutPlane(str_code_plane);
 }
+AFA_Trap* AFA_Manager_Pool::PoolGetTrapByCode(const FString& str_code_trap)
+{
+	return PoolOutTrap(str_code_trap);
+}
 AFA_Object* AFA_Manager_Pool::PoolGetObjectByCode(const FString& str_code_object)
 {
 	return PoolOutObject(str_code_object);
@@ -25,6 +30,11 @@ void AFA_Manager_Pool::PoolInPlane(AFA_Plane* plane)
 {
 	if (!plane) return;
 	_pool_plane.FindOrAdd("PLANE00001").Add(plane);
+}
+void AFA_Manager_Pool::PoolInTrap(AFA_Trap* trap)
+{
+	if (!trap) return;
+	_pool_trap.Add(trap);
 }
 void AFA_Manager_Pool::PoolInObject(AFA_Object* object)
 {
@@ -47,6 +57,20 @@ AFA_Plane* AFA_Manager_Pool::PoolOutPlane(const FString& str_code_plane)
 	else
 	{
 		return arr_pool_plane->Pop();
+	}
+}
+AFA_Trap* AFA_Manager_Pool::PoolOutTrap(const FString& str_code_trap)
+{
+	if (_pool_trap.Num() <= 0)
+	{
+		const FDataObject* s_data_object = _fagi->FindDataObjectByCode(str_code_trap);
+		AFA_Trap* trap_spawn = Cast<AFA_Trap>(GetWorld()->SpawnActor<AFA_Object>(s_data_object->GetClassObject(), _spawn_param)); // 풀링 매니저
+		trap_spawn->ObjectPostInit(s_data_object);
+		return trap_spawn;
+	}
+	else
+	{
+		return _pool_trap.Pop();
 	}
 }
 AFA_Object* AFA_Manager_Pool::PoolOutObject(const FString& str_code_object)

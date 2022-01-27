@@ -58,7 +58,7 @@ private:
 
 #pragma region Color
 public:
-	void PlayerSetColor(const FLinearColor& s_linear_color);
+	void PlayerSetColor(const FLinearColor& s_linear_color, const ERGBType e_rgb_type);
 #pragma endregion
 
 #pragma region Stat

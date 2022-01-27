@@ -11,6 +11,7 @@
 #include "Manager/FA_Manager_VFX.h"
 #include "Actor/Player/FA_Player.h"
 #include "Actor/Object/FA_Plane.h"
+#include "Actor/Object/Obstacle/FA_Trap.h"
 #include "Actor/Object/FA_Object.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -193,7 +194,7 @@ void AFA_GM::TickCheckMoveFloor()
 
 			/*새로운 오브젝트 생성*/
 			//AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
-			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode("OBJ00001");
+			AFA_Trap* trap_spawn = _manager_pool->PoolGetTrapByCode("OBJ00001");
 			const ERGBType e_rgb_type = CalcSpawnObjectRGBType();
 			FLinearColor s_object_rgb = FLinearColor();
 			switch (e_rgb_type)
@@ -213,16 +214,17 @@ void AFA_GM::TickCheckMoveFloor()
 			default:
 				break;
 			}
-			object_spawn->ObjectInit(IdGenerator(), s_object_rgb);
+			trap_spawn->ObjectInit(IdGenerator());
+			trap_spawn->TrapInit(s_object_rgb, e_rgb_type);
 
 			/*이동해야할 바닥 초기화*/
-			plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
+			plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), trap_spawn);
 
-			/*오브젝트가 찬스라면 Gem도 생성합니다*/
-			if (object_spawn->GetInfoObject().obj_type == EObjectType::JUMP)
-			{
-				SpawnGem(plane);
-			}
+			///*오브젝트가 찬스라면 Gem도 생성합니다*/
+			//if (object_spawn->GetInfoObject().obj_type == EObjectType::JUMP)
+			//{
+			//	SpawnGem(plane);
+			//}
 		}
 	}
 
@@ -248,7 +250,7 @@ void AFA_GM::GameRestart()
 	_player->PlayerMovementSetActive(false);
 	_player->SetActorLocation(_player_base_location);
 	_player->GetInfoPlayer().power_count_current = _data_game_cache->GetPlayerPowerCountMax();
-	_player->PlayerSetColor(FLinearColor(FColor::FromHex("FFFFFFFF")));
+	_player->PlayerSetColor(FLinearColor(FColor::FromHex("FFFFFFFF")), ERGBType::WHITE);
 
 	/*바닥 풀링*/
 	PlaneInitLocation();
@@ -310,7 +312,7 @@ void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap, const FLinearColor& s_linear
 	{
 	case EObjectType::TRAP:
 		_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
-		_player->PlayerSetColor(s_linear_color);
+		//_player->PlayerSetColor(s_linear_color);
 		break;
 	case EObjectType::WALL:
 		//ObstacleWallTapTimingStart();
@@ -331,6 +333,73 @@ void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap, const FLinearColor& s_linear
 		_info_game.gem_add += 1;
 
 		_pc->PCUIObtainGem(_info_game.gem);
+		break;
+	default:
+		break;
+	}
+}
+void AFA_GM::TrapOverlap(AFA_Trap* trap)
+{
+	if (!trap) return;
+
+	switch (trap->GetRGBType())
+	{
+	case ERGBType::R:
+		/*Jump : G, Slow : B*/
+		switch (_player->GetInfoPlayer().rgb_type)
+		{
+		case ERGBType::R:
+			ChanceJumpFeverTimingStart();
+			break;
+		case ERGBType::G:
+			_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+			break;
+		case ERGBType::B:
+			_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
+			break;
+		default:
+			break;
+		}
+		_player->PlayerSetColor(trap->GetColor(), trap->GetRGBType());
+		break;
+	case ERGBType::G:
+		/*Jump : B, Slow : R*/
+		switch (_player->GetInfoPlayer().rgb_type)
+		{
+		case ERGBType::R:
+			_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
+			break;
+		case ERGBType::G:
+			ChanceJumpFeverTimingStart();
+			break;
+		case ERGBType::B:
+			_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+			break;
+		default:
+			break;
+		}
+		_player->PlayerSetColor(trap->GetColor(), trap->GetRGBType());
+		break;
+	case ERGBType::B:
+		/*Jump : R, Slow : G*/
+		switch (_player->GetInfoPlayer().rgb_type)
+		{
+		case ERGBType::R:
+			_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+			break;
+		case ERGBType::G:
+			_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
+			break;
+		case ERGBType::B:
+			ChanceJumpFeverTimingStart();
+			break;
+		default:
+			break;
+		}
+		_player->PlayerSetColor(trap->GetColor(), trap->GetRGBType());
+		break;
+	case ERGBType::BLACK:
+		_player->PlayerAddSpeed(0.f);
 		break;
 	default:
 		break;
@@ -468,7 +537,7 @@ void AFA_GM::PlaneInitLocation()
 		if (i >= _data_game_cache->GetPlaneBaseSpawnObject())
 		{
 			/*새로운 오브젝트 생성*/
-			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode("OBJ00001");
+			AFA_Trap* trap_spawn = _manager_pool->PoolGetTrapByCode("OBJ00001");
 			const ERGBType e_rgb_type = CalcSpawnObjectRGBType();
 			FLinearColor s_object_rgb = FLinearColor();
 			switch (e_rgb_type)
@@ -488,10 +557,11 @@ void AFA_GM::PlaneInitLocation()
 			default:
 				break;
 			}
-			object_spawn->ObjectInit(IdGenerator(), s_object_rgb);
+			trap_spawn->ObjectInit(IdGenerator());
+			trap_spawn->TrapInit(s_object_rgb, e_rgb_type);
 
 			/*이동해야할 바닥 초기화*/
-			plane->PlaneSpawn(FVector(_plane_move_count * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
+			plane->PlaneSpawn(FVector(_plane_move_count * _data_game_cache->GetPlaneLength(), 0.f, 0.f), trap_spawn);
 		}
 		else
 		{
