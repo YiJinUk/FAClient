@@ -102,13 +102,17 @@ private:
 
 #pragma region Object.Total
 public:
-	void ObjectOverlap(AFA_Object* obj_overlap);
+	void ObjectOverlap(AFA_Object* obj_overlap, const FLinearColor& s_linear_color = FLinearColor());
 
 private:
 	const FString CalcSpawnObjectCode();
+	const ERGBType CalcSpawnObjectRGBType();
 private:
 	//UPROPERTY()
 		//TArray<AFA_Object*> _spawn_objects;
+
+	UPROPERTY()
+		TArray<ERGBType> _prob_rgb;
 
 	UPROPERTY()
 		TArray<FString> _prob_obstacles;

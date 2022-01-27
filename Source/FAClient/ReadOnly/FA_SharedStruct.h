@@ -43,6 +43,15 @@ enum class EObjectType : uint8
 };
 
 UENUM()
+enum class ERGBType : uint8
+{
+	R = 0,
+	G = 1,
+	B = 2,
+	BLACK = 3,
+};
+
+UENUM()
 enum class EVFXType : uint8
 {
 	GEM,
@@ -99,6 +108,25 @@ protected:
 		int32 _plane_length = 5000;
 
 	UPROPERTY(EditAnywhere, Category = "ObjectProb")
+		int32 _object_prob_r = 25;
+	UPROPERTY(EditAnywhere, Category = "ObjectProb")
+		int32 _object_prob_g = 25;
+	UPROPERTY(EditAnywhere, Category = "ObjectProb")
+		int32 _object_prob_b = 25;
+	UPROPERTY(EditAnywhere, Category = "ObjectProb")
+		int32 _object_prob_black = 25;
+
+	UPROPERTY(EditAnywhere, Category = "ObjectColor")
+		FLinearColor _object_color_r = FLinearColor();
+	UPROPERTY(EditAnywhere, Category = "ObjectColor")
+		FLinearColor _object_color_g = FLinearColor();
+	UPROPERTY(EditAnywhere, Category = "ObjectColor")
+		FLinearColor _object_color_b = FLinearColor();
+	UPROPERTY(EditAnywhere, Category = "ObjectColor")
+		FLinearColor _object_color_black = FLinearColor();
+
+
+	UPROPERTY(EditAnywhere, Category = "ObjectProb")
 		int32 _object_prob_obstacle = 50;
 	UPROPERTY(EditAnywhere, Category = "ObjectProb")
 		int32 _object_prob_chance = 50;
@@ -146,6 +174,20 @@ public:
 	FORCEINLINE const int32 GetPlaneBaseSpawnCount() const { return _plane_base_spawn_count; }
 	FORCEINLINE const int32 GetPlaneBaseSpawnObject() const { return _plane_base_spawn_object; }
 	FORCEINLINE const int32 GetPlaneLength() const { return _plane_length; }
+
+	FORCEINLINE const int32 GetObjectProbR() const { return _object_prob_r; }
+	FORCEINLINE const int32 GetObjectProbG() const { return _object_prob_g; }
+	FORCEINLINE const int32 GetObjectProbB() const { return _object_prob_b; }
+	FORCEINLINE const int32 GetObjectProbBlack() const { return _object_prob_black; }
+
+	FORCEINLINE const FLinearColor GetObjectColorR() const { return _object_color_r; }
+	FORCEINLINE const FLinearColor GetObjectColorG() const { return _object_color_g; }
+	FORCEINLINE const FLinearColor GetObjectColorB() const { return _object_color_b; }
+	FORCEINLINE const FLinearColor GetObjectColorBlack() const { return _object_color_black; }
+	
+
+
+
 
 	FORCEINLINE const int32 GetObjectProbObstacle() const { return _object_prob_obstacle; }
 	FORCEINLINE const int32 GetObjectProbChance() const { return _object_prob_chance; }

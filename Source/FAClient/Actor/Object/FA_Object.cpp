@@ -41,10 +41,16 @@ void AFA_Object::ObjectPostInitChild(const FDataObject* s_data_object)
 	//override
 }
 
-void AFA_Object::ObjectInit(const int64 i_id)
+void AFA_Object::ObjectInit(const int64 i_id, const FLinearColor& s_linear_color)
 {
 	_info_object.id = i_id;
 	ObjectSetPoolActive(true);
+
+	ObjectInitChild(s_linear_color);
+}
+void AFA_Object::ObjectInitChild(const FLinearColor& s_linear_color)
+{
+	//override
 }
 
 void AFA_Object::ObjectSetPoolActive(const bool b_is_active)

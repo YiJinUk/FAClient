@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly) 
 		UProjectileMovementComponent* _projectile_movement = nullptr;
 
+	UPROPERTY(BlueprintReadWrite)
+		UMaterialInstanceDynamic* _mid_color = nullptr;
+
 	UPROPERTY()
 		UFA_GI* _fagi = nullptr;
 	UPROPERTY()
@@ -51,6 +54,11 @@ public:
 private:
 	UFUNCTION()
 		void PlayerOnBounce(const FHitResult& s_hit, const FVector& v_velocity);
+#pragma endregion
+
+#pragma region Color
+public:
+	void PlayerSetColor(const FLinearColor& s_linear_color);
 #pragma endregion
 
 #pragma region Stat

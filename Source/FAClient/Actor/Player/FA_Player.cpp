@@ -92,6 +92,11 @@ void AFA_Player::PlayerMovementJump(const float f_add_speed, const float f_add_v
 	//UFA_FunctionLibrary::GPrintString(2, 5, "new : "+_projectile_movement->Velocity.ToString());
 }
 
+void AFA_Player::PlayerSetColor(const FLinearColor& s_linear_color)
+{
+	_mid_color->SetVectorParameterValue("Color", s_linear_color);
+}
+
 void AFA_Player::PlayerOnBounce(const FHitResult& s_hit, const FVector& v_velocity)
 {
 	//UFA_FunctionLibrary::GPrintString(1, 0.1f, "Bounce");

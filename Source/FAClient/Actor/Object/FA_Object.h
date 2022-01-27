@@ -36,7 +36,8 @@ public:
 	virtual void ObjectPostInitChild(const FDataObject* s_data_object);
 
 	/*풀링으로 생성 시 호출*/
-	void ObjectInit(const int64 i_id);
+	void ObjectInit(const int64 i_id, const FLinearColor& s_linear_color = FLinearColor());
+	virtual void ObjectInitChild(const FLinearColor& s_linear_color);
 
 	void ObjectSetPoolActive(const bool b_is_active);
 	virtual void ObjectSetPoolActiveChild(const bool b_is_active);

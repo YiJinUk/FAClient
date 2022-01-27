@@ -74,21 +74,28 @@ void AFA_GM::GMInit()
 	_manager_vfx->VFXInit(_fagi);
 	_manager_sfx->SFXInit(_fagi);
 
-	/*오브젝트 생성확률 초기화*/
-	for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbObstacles())
-	{
-		for (int32 i = 0, i_len = s_data_obj_prob.GetObjectProb(); i < i_len; ++i)
-		{
-			_prob_obstacles.Add(s_data_obj_prob.GetCode());
-		}
-	}
-	for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbChances())
-	{
-		for (int32 i = 0, i_len = s_data_obj_prob.GetObjectProb(); i < i_len; ++i)
-		{
-			_prob_chances.Add(s_data_obj_prob.GetCode());
-		}
-	}
+	///*오브젝트 생성확률 초기화*/
+	//for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbObstacles())
+	//{
+	//	for (int32 i = 0, i_len = s_data_obj_prob.GetObjectProb(); i < i_len; ++i)
+	//	{
+	//		_prob_obstacles.Add(s_data_obj_prob.GetCode());
+	//	}
+	//}
+	//for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbChances())
+	//{
+	//	for (int32 i = 0, i_len = s_data_obj_prob.GetObjectProb(); i < i_len; ++i)
+	//	{
+	//		_prob_chances.Add(s_data_obj_prob.GetCode());
+	//	}
+	//}
+	/*오브젝트 RGB확률 초기화*/
+	for (int32 i = 0, i_len = _data_game_cache->GetObjectProbR(); i < i_len; ++i) _prob_rgb.Add(ERGBType::R);
+	for (int32 i = 0, i_len = _data_game_cache->GetObjectProbG(); i < i_len; ++i) _prob_rgb.Add(ERGBType::G);
+	for (int32 i = 0, i_len = _data_game_cache->GetObjectProbB(); i < i_len; ++i) _prob_rgb.Add(ERGBType::B);
+	for (int32 i = 0, i_len = _data_game_cache->GetObjectProbBlack(); i < i_len; ++i) _prob_rgb.Add(ERGBType::BLACK);
+	
+	
 
 	/*바닥 초기화*/
 	for (int32 i = 0, i_len = _data_game_cache->GetPlaneBaseSpawnCount(); i < i_len; ++i)
@@ -185,8 +192,28 @@ void AFA_GM::TickCheckMoveFloor()
 			}
 
 			/*새로운 오브젝트 생성*/
-			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
-			object_spawn->ObjectInit(IdGenerator());
+			//AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
+			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode("OBJ00001");
+			const ERGBType e_rgb_type = CalcSpawnObjectRGBType();
+			FLinearColor s_object_rgb = FLinearColor();
+			switch (e_rgb_type)
+			{
+			case ERGBType::R:
+				s_object_rgb = _data_game_cache->GetObjectColorR();
+				break;
+			case ERGBType::G:
+				s_object_rgb = _data_game_cache->GetObjectColorG();
+				break;
+			case ERGBType::B:
+				s_object_rgb = _data_game_cache->GetObjectColorB();
+				break;
+			case ERGBType::BLACK:
+				s_object_rgb = _data_game_cache->GetObjectColorBlack();
+				break;
+			default:
+				break;
+			}
+			object_spawn->ObjectInit(IdGenerator(), s_object_rgb);
 
 			/*이동해야할 바닥 초기화*/
 			plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
@@ -221,6 +248,7 @@ void AFA_GM::GameRestart()
 	_player->PlayerMovementSetActive(false);
 	_player->SetActorLocation(_player_base_location);
 	_player->GetInfoPlayer().power_count_current = _data_game_cache->GetPlayerPowerCountMax();
+	_player->PlayerSetColor(FLinearColor(FColor::FromHex("FFFFFFFF")));
 
 	/*바닥 풀링*/
 	PlaneInitLocation();
@@ -274,15 +302,15 @@ void AFA_GM::PlayerPowerStart()
 	_pc->PCPowerStart(_info_game, _player->GetInfoPlayer());
 }
 
-void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap)
+void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap, const FLinearColor& s_linear_color)
 {
 	if (!obj_overlap) return;
 
 	switch (obj_overlap->GetInfoObject().obj_type)
 	{
 	case EObjectType::TRAP:
-		//_player->PlayerAddSpeed(_data_game_cache->GetObstacleTrapAddSpeed());
 		_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
+		_player->PlayerSetColor(s_linear_color);
 		break;
 	case EObjectType::WALL:
 		//ObstacleWallTapTimingStart();
@@ -387,21 +415,28 @@ void AFA_GM::SpawnGem(AFA_Plane* plane)
 const FString AFA_GM::CalcSpawnObjectCode()
 {
 	//_fagi->IsPassProbByInt()
-	//return FString();
+	return FString();
 
-	/*장애물을 설치할지 찬스를 설치할지*/
-	if (_fagi->IsPassProbByInt(_data_game_cache->GetObjectProbObstacle()))
-	{
-		/*장애물 설치*/
-		/*랜덤한 장애물의 코드를 리턴합니다*/
-		return _prob_obstacles[_fagi->GetRandomByInt(0, _prob_obstacles.Num() - 1)];
-	}
-	else
-	{
-		/*찬스 설치*/
-		/*랜덤한 찬스의 코드를 리턴합니다*/
-		return _prob_chances[_fagi->GetRandomByInt(0, _prob_chances.Num() - 1)];
-	}
+	///*장애물을 설치할지 찬스를 설치할지*/
+	//if (_fagi->IsPassProbByInt(_data_game_cache->GetObjectProbObstacle()))
+	//{
+	//	/*장애물 설치*/
+	//	/*랜덤한 장애물의 코드를 리턴합니다*/
+	//	return _prob_obstacles[_fagi->GetRandomByInt(0, _prob_obstacles.Num() - 1)];
+	//}
+	//else
+	//{
+	//	/*찬스 설치*/
+	//	/*랜덤한 찬스의 코드를 리턴합니다*/
+	//	return _prob_chances[_fagi->GetRandomByInt(0, _prob_chances.Num() - 1)];
+	//}
+
+	/*어떤 색상의 오브젝트를 생성할건지 */
+}
+
+const ERGBType AFA_GM::CalcSpawnObjectRGBType()
+{
+	return _prob_rgb[_fagi->GetRandomByInt(0, _prob_rgb.Num() - 1)];
 }
 
 void AFA_GM::PlaneInitLocation()
@@ -433,9 +468,27 @@ void AFA_GM::PlaneInitLocation()
 		if (i >= _data_game_cache->GetPlaneBaseSpawnObject())
 		{
 			/*새로운 오브젝트 생성*/
-			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode(CalcSpawnObjectCode());
-			object_spawn->ObjectInit(IdGenerator());
-			//_spawn_objects.Add(object_spawn);
+			AFA_Object* object_spawn = _manager_pool->PoolGetObjectByCode("OBJ00001");
+			const ERGBType e_rgb_type = CalcSpawnObjectRGBType();
+			FLinearColor s_object_rgb = FLinearColor();
+			switch (e_rgb_type)
+			{
+			case ERGBType::R:
+				s_object_rgb = _data_game_cache->GetObjectColorR();
+				break;
+			case ERGBType::G:
+				s_object_rgb = _data_game_cache->GetObjectColorG();
+				break;
+			case ERGBType::B:
+				s_object_rgb = _data_game_cache->GetObjectColorB();
+				break;
+			case ERGBType::BLACK:
+				s_object_rgb = _data_game_cache->GetObjectColorBlack();
+				break;
+			default:
+				break;
+			}
+			object_spawn->ObjectInit(IdGenerator(), s_object_rgb);
 
 			/*이동해야할 바닥 초기화*/
 			plane->PlaneSpawn(FVector(_plane_move_count * _data_game_cache->GetPlaneLength(), 0.f, 0.f), object_spawn);
