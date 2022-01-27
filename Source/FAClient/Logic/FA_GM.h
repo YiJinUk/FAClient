@@ -158,6 +158,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ShotPlayer();
 	void PlayerPowerStart();
+	void PlayerChangeColor(const FLinearColor& s_change_color, const ERGBType e_rgb_type);
 
 	void SetPowerProgressMaterial(UMaterialInstanceDynamic* mid_power_progress);
 private:

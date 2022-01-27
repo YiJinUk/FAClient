@@ -40,6 +40,9 @@ public:
 	void UIGamePlayInit();
 
 	void UIGamePlayPowerStart(const FInfoPlayer& s_info_player);
+	
+protected:
+	
 private:
 	UFUNCTION()
 		void ClickedPower();

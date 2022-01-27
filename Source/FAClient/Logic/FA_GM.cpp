@@ -250,7 +250,7 @@ void AFA_GM::GameRestart()
 	_player->PlayerMovementSetActive(false);
 	_player->SetActorLocation(_player_base_location);
 	_player->GetInfoPlayer().power_count_current = _data_game_cache->GetPlayerPowerCountMax();
-	_player->PlayerSetColor(FLinearColor(FColor::FromHex("FFFFFFFF")), ERGBType::WHITE);
+	PlayerChangeColor(FLinearColor(FColor::FromHex("FFFFFFFF")), ERGBType::WHITE);
 
 	/*¹Ù´Ú Ç®¸µ*/
 	PlaneInitLocation();
@@ -302,6 +302,32 @@ void AFA_GM::PlayerPowerStart()
 	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpFeverAddSpeed(), _data_game_cache->GetChanceJumpFeverAddVelocityZ());
 
 	_pc->PCPowerStart(_info_game, _player->GetInfoPlayer());
+}
+void AFA_GM::PlayerChangeColor(const FLinearColor& s_change_color, const ERGBType e_rgb_type)
+{
+	_player->PlayerSetColor(s_change_color, e_rgb_type);
+	switch (e_rgb_type)
+	{
+	case ERGBType::R:
+		/*Jump : G, Slow : B*/
+		_pc->PCChangeRGB(s_change_color, _data_game_cache->GetObjectColorG(), _data_game_cache->GetObjectColorB());
+		break;
+	case ERGBType::G:
+		/*Jump : B, Slow : R*/
+		_pc->PCChangeRGB(s_change_color, _data_game_cache->GetObjectColorB(), _data_game_cache->GetObjectColorR());
+		break;
+	case ERGBType::B:
+		/*Jump : R, Slow : G*/
+		_pc->PCChangeRGB(s_change_color, _data_game_cache->GetObjectColorR(), _data_game_cache->GetObjectColorG());
+		break;
+	case ERGBType::BLACK:
+		break;
+	case ERGBType::WHITE:
+		_pc->PCChangeRGB(s_change_color, s_change_color, s_change_color);
+		break;
+	default:
+		break;
+	}
 }
 
 void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap, const FLinearColor& s_linear_color)
@@ -360,7 +386,7 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 		default:
 			break;
 		}
-		_player->PlayerSetColor(trap->GetColor(), trap->GetRGBType());
+		PlayerChangeColor(trap->GetColor(), trap->GetRGBType());
 		break;
 	case ERGBType::G:
 		/*Jump : B, Slow : R*/
@@ -378,7 +404,7 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 		default:
 			break;
 		}
-		_player->PlayerSetColor(trap->GetColor(), trap->GetRGBType());
+		PlayerChangeColor(trap->GetColor(), trap->GetRGBType());
 		break;
 	case ERGBType::B:
 		/*Jump : R, Slow : G*/
@@ -396,7 +422,7 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 		default:
 			break;
 		}
-		_player->PlayerSetColor(trap->GetColor(), trap->GetRGBType());
+		PlayerChangeColor(trap->GetColor(), trap->GetRGBType());
 		break;
 	case ERGBType::BLACK:
 		_player->PlayerAddSpeed(0.f);

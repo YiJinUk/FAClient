@@ -53,6 +53,10 @@ void AFA_PC::PCPowerStart(const FInfoGame& s_info_game, const FInfoPlayer& s_inf
 {
 	_ui_main->UIMainPowerStart(s_info_game, s_info_player);
 }
+void AFA_PC::PCChangeRGB(const FLinearColor& s_fever, const FLinearColor& s_jump, const FLinearColor& s_slow)
+{
+	_ui_main->UIMainChangeRGB(s_fever, s_jump, s_slow);
+}
 
 void AFA_PC::PCGameRestart()
 {

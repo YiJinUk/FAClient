@@ -13,6 +13,7 @@ class UFA_UI_Fever;
 class UFA_UI_GamePlay;
 class UWidgetSwitcher;
 class UTextBlock;
+class UImage;
 
 /**
  * 
@@ -50,6 +51,13 @@ private:
 	UPROPERTY(Meta = (BindWidget))
 		UTextBlock* _score_current = nullptr;
 
+	UPROPERTY(Meta = (BindWidget))
+		UImage* _fever_color = nullptr;
+	UPROPERTY(Meta = (BindWidget))
+		UImage* _jump_color = nullptr;
+	UPROPERTY(Meta = (BindWidget))
+		UImage* _slow_color = nullptr;
+
 public:
 	void UIMainTickUpdate(const int32 i_score_current);
 
@@ -61,6 +69,7 @@ public:
 
 	void UIMainShotStart();
 	void UIMainPowerStart(const FInfoGame& s_info_game, const FInfoPlayer& s_info_player);
+	void UIMainChangeRGB(const FLinearColor& s_fever, const FLinearColor& s_jump, const FLinearColor& s_slow);
 
 	void UIMainGameRestart();
 	void UIMainGameOver(const FInfoGame& s_info_game);

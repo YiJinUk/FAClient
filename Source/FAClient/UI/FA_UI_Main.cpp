@@ -9,6 +9,7 @@
 
 #include "Components/WidgetSwitcher.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 
 void UFA_UI_Main::UIMainInit(const FInfoGame& s_info_game)
 {
@@ -52,6 +53,12 @@ void UFA_UI_Main::UIMainPowerStart(const FInfoGame& s_info_game, const FInfoPlay
 {
 	_gem->SetText(FText::AsNumber(s_info_game.gem));
 	_game_play->UIGamePlayPowerStart(s_info_player);
+}
+void UFA_UI_Main::UIMainChangeRGB(const FLinearColor& s_fever, const FLinearColor& s_jump, const FLinearColor& s_slow)
+{
+	_fever_color->SetColorAndOpacity(s_fever);
+	_jump_color->SetColorAndOpacity(s_jump);
+	_slow_color->SetColorAndOpacity(s_slow);
 }
 
 void UFA_UI_Main::UIMainGameRestart()

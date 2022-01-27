@@ -35,6 +35,7 @@ public:
 
 	void PCShotStart();
 	void PCPowerStart(const FInfoGame& s_info_game, const FInfoPlayer& s_info_player);
+	void PCChangeRGB(const FLinearColor& s_fever, const FLinearColor& s_jump, const FLinearColor& s_slow);
 
 	void PCGameRestart();
 #pragma endregion
