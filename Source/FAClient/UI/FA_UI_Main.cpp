@@ -35,7 +35,8 @@ void UFA_UI_Main::UIMainChanceJumpFever()
 {
 	_fever->UIFeverInit();
 	_switcher->SetActiveWidgetIndex(3);
-	UIMainInteract(EInteractType::FEVER);
+	PlayAnimation(_anim_fever);
+	//UIMainInteractStart(EInteractType::FEVER);
 }
 void UFA_UI_Main::UIMainFeverSuccess()
 {
@@ -45,8 +46,9 @@ void UFA_UI_Main::UIMainFeverFailed()
 {
 	_switcher->SetActiveWidgetIndex(4);
 }
-void UFA_UI_Main::UIMainInteract(const EInteractType e_interact_type)
+void UFA_UI_Main::UIMainInteractStart(const EInteractType e_interact_type)
 {
+	_switcher->SetActiveWidgetIndex(0);
 	switch (e_interact_type)
 	{
 	case EInteractType::FEVER:
@@ -61,6 +63,10 @@ void UFA_UI_Main::UIMainInteract(const EInteractType e_interact_type)
 	default:
 		break;
 	}
+}
+void UFA_UI_Main::UIMainInteractEnd()
+{
+	_switcher->SetActiveWidgetIndex(4);
 }
 
 void UFA_UI_Main::UIMainShotStart()
@@ -98,5 +104,6 @@ void UFA_UI_Main::UIMainSetScoreBest(const int32 i_score_best)
 }
 void UFA_UI_Main::UIMainObtainGem(const int32 i_gem)
 {
+	PlayAnimation(_anim_obtain_gem);
 	_gem->SetText(FText::AsNumber(i_gem));
 }

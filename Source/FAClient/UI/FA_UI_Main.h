@@ -65,6 +65,9 @@ private:
 	UPROPERTY(Meta = (BindWidgetAnim), Transient, Meta = (AllowPrivateAccess = true))
 		UWidgetAnimation* _anim_slow = nullptr;
 
+	UPROPERTY(Meta = (BindWidgetAnim), Transient, Meta = (AllowPrivateAccess = true))
+		UWidgetAnimation* _anim_obtain_gem = nullptr;
+
 public:
 	void UIMainTickUpdate(const int32 i_score_current);
 
@@ -73,7 +76,8 @@ public:
 	void UIMainChanceJumpFever();
 	void UIMainFeverSuccess();
 	void UIMainFeverFailed();
-	void UIMainInteract(const EInteractType e_interact_type);
+	void UIMainInteractStart(const EInteractType e_interact_type);
+	void UIMainInteractEnd();
 
 	void UIMainShotStart();
 	void UIMainPowerStart(const FInfoGame& s_info_game, const FInfoPlayer& s_info_player);

@@ -125,6 +125,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "ObjectProb")
 		int32 _object_prob_black = 25;
 
+	UPROPERTY(EditAnywhere, Category = "GemProb")
+		int32 _gem_prob = 20;
+
 	UPROPERTY(EditAnywhere, Category = "ObjectColor")
 		FLinearColor _object_color_r = FLinearColor();
 	UPROPERTY(EditAnywhere, Category = "ObjectColor")
@@ -189,10 +192,13 @@ public:
 	FORCEINLINE const int32 GetObjectProbB() const { return _object_prob_b; }
 	FORCEINLINE const int32 GetObjectProbBlack() const { return _object_prob_black; }
 
+	FORCEINLINE const int32 GetGemProb() const { return _gem_prob; }
+
 	FORCEINLINE const FLinearColor GetObjectColorR() const { return _object_color_r; }
 	FORCEINLINE const FLinearColor GetObjectColorG() const { return _object_color_g; }
 	FORCEINLINE const FLinearColor GetObjectColorB() const { return _object_color_b; }
 	FORCEINLINE const FLinearColor GetObjectColorBlack() const { return _object_color_black; }
+
 	
 
 

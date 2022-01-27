@@ -220,11 +220,11 @@ void AFA_GM::TickCheckMoveFloor()
 			/*이동해야할 바닥 초기화*/
 			plane->PlaneSpawn(FVector((_plane_move_count + _data_game_cache->GetPlaneBaseSpawnCount()) * _data_game_cache->GetPlaneLength(), 0.f, 0.f), trap_spawn);
 
-			///*오브젝트가 찬스라면 Gem도 생성합니다*/
-			//if (object_spawn->GetInfoObject().obj_type == EObjectType::JUMP)
-			//{
-			//	SpawnGem(plane);
-			//}
+			/*일정확률로 Gem도 생성합니다*/
+			if (_fagi->IsPassProbByInt(_data_game_cache->GetGemProb()))
+			{
+				SpawnGem(plane);
+			}
 		}
 	}
 
@@ -368,6 +368,13 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 {
 	if (!trap) return;
 
+	if (trap->GetRGBType() == ERGBType::BLACK)
+	{
+		/*GameOver*/
+		_player->PlayerAddSpeed(0.f);
+		return;
+	}
+
 	switch (_player->GetInfoPlayer().rgb_type)
 	{
 	case ERGBType::R:
@@ -425,7 +432,7 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 		PlayerChangeColor(trap->GetColor(), trap->GetRGBType());
 		break;
 	case ERGBType::BLACK:
-		_player->PlayerAddSpeed(0.f);
+		//_player->PlayerAddSpeed(0.f);
 		break;
 	case ERGBType::WHITE:
 		PlayerChangeColor(trap->GetColor(), trap->GetRGBType());
@@ -500,11 +507,13 @@ void AFA_GM::ObjectInteractJumpStart()
 	GetWorldTimerManager().SetTimer(_timer_interact_trap, this, &AFA_GM::ObjectInteractJumpEnd, _data_game_cache->GetChanceJumpFeverTiming() * _data_game_cache->GetChanceJumpFeverSlotRate(), false);
 
 	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
-	_pc->PCUIInteract(EInteractType::JUMP);
+	_pc->PCUIInteractStart(EInteractType::JUMP);
 }
 void AFA_GM::ObjectInteractJumpEnd()
 {
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+
+	_pc->PCUIInteractEnd();
 }
 void AFA_GM::ObjectInteractSlowStart()
 {
@@ -512,11 +521,13 @@ void AFA_GM::ObjectInteractSlowStart()
 	GetWorldTimerManager().SetTimer(_timer_interact_trap, this, &AFA_GM::ObjectInteractSlowEnd, _data_game_cache->GetChanceJumpFeverTiming() * _data_game_cache->GetChanceJumpFeverSlotRate(), false);
 
 	_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
-	_pc->PCUIInteract(EInteractType::SLOW);
+	_pc->PCUIInteractStart(EInteractType::SLOW);
 }
 void AFA_GM::ObjectInteractSlowEnd()
 {
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+
+	_pc->PCUIInteractEnd();
 }
 
 void AFA_GM::SpawnGem(AFA_Plane* plane)

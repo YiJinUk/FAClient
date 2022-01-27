@@ -48,7 +48,8 @@ public:
 
 	void PCUIObstacleWallTap();
 	void PCUIChanceJumpFever();
-	void PCUIInteract(const EInteractType e_interact_type);
+	void PCUIInteractStart(const EInteractType e_interact_type);
+	void PCUIInteractEnd();
 
 	void PCUIObtainGem(const int32 i_gem);
 protected:
