@@ -30,6 +30,6 @@ void AFA_Manager_SaveLoad::LoadStart(FInfoGame& s_info_game)
 		//const FDataGame* s_data_game = sagi->GetDataGame();
 
 		s_info_game.score_best = 0;
-		s_info_game.gem = 0;
+		s_info_game.gem = 100;
 	}
 }

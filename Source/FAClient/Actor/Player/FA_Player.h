@@ -48,6 +48,7 @@ public:
 	void PlayerSetVelocity(const FVector& v_velocity);
 	void PlayerAddSpeed(const float f_speed);
 	void PlayerMovementJump(const float f_add_speed, const float f_add_velocty_z);
+	void PlayerMovementSlow(const float f_slow_rate);
 
 	const int32 PlayerGetSpeed();
 	const FVector& PlayerMovementGetVelocity();

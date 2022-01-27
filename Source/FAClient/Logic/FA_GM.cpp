@@ -435,6 +435,7 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 		//_player->PlayerAddSpeed(0.f);
 		break;
 	case ERGBType::WHITE:
+		ObjectInteractJumpStart();
 		PlayerChangeColor(trap->GetColor(), trap->GetRGBType());
 		break;
 	default:
@@ -520,7 +521,7 @@ void AFA_GM::ObjectInteractSlowStart()
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), _data_game_cache->GetChanceJumpFeverSlotRate());
 	GetWorldTimerManager().SetTimer(_timer_interact_trap, this, &AFA_GM::ObjectInteractSlowEnd, _data_game_cache->GetChanceJumpFeverTiming() * _data_game_cache->GetChanceJumpFeverSlotRate(), false);
 
-	_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
+	_player->PlayerMovementSlow(_data_game_cache->GetObstacleTrapAddSpeed());
 	_pc->PCUIInteractStart(EInteractType::SLOW);
 }
 void AFA_GM::ObjectInteractSlowEnd()

@@ -91,6 +91,11 @@ void AFA_Player::PlayerMovementJump(const float f_add_speed, const float f_add_v
 	
 	//UFA_FunctionLibrary::GPrintString(2, 5, "new : "+_projectile_movement->Velocity.ToString());
 }
+void AFA_Player::PlayerMovementSlow(const float f_slow_rate)
+{
+	const FVector& v_velocity = _projectile_movement->Velocity;
+	_projectile_movement->SetVelocityInLocalSpace(FVector(v_velocity.X * f_slow_rate, 0.f, _info_player.max_velocity_z * f_slow_rate));
+}
 
 void AFA_Player::PlayerSetColor(const FLinearColor& s_linear_color, const ERGBType e_rgb_type)
 {
