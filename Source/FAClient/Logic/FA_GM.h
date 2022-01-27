@@ -142,9 +142,15 @@ private:
 	//피버를 발동하지 못했습니다
 	void TimerChanceJumpFeverFailed();
 	
+	/*Jump*/
+	void ObjectInteractJumpStart();
+	void ObjectInteractJumpEnd();
+	/*Slow*/
+	void ObjectInteractSlowStart();
+	void ObjectInteractSlowEnd();
 private:
 	UPROPERTY()
-		FTimerHandle _timer_TimerChanceJumpFeverFailed;
+		FTimerHandle _timer_interact_trap;
 #pragma endregion
 
 #pragma region Object.Gem

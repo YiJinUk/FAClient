@@ -43,6 +43,10 @@ void AFA_PC::PCFeverFailed()
 {
 	_ui_main->UIMainFeverFailed();
 }
+void AFA_PC::PCUIInteract(const EInteractType e_interact_type)
+{
+	_ui_main->UIMainInteract(e_interact_type);
+}
 
 void AFA_PC::PCShotStart()
 {

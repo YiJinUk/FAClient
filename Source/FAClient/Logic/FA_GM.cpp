@@ -368,20 +368,20 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 {
 	if (!trap) return;
 
-	switch (trap->GetRGBType())
+	switch (_player->GetInfoPlayer().rgb_type)
 	{
 	case ERGBType::R:
 		/*Jump : G, Slow : B*/
-		switch (_player->GetInfoPlayer().rgb_type)
+		switch (trap->GetRGBType())
 		{
 		case ERGBType::R:
 			ChanceJumpFeverTimingStart();
 			break;
 		case ERGBType::G:
-			_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+			ObjectInteractJumpStart();
 			break;
 		case ERGBType::B:
-			_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
+			ObjectInteractSlowStart();
 			break;
 		default:
 			break;
@@ -390,16 +390,16 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 		break;
 	case ERGBType::G:
 		/*Jump : B, Slow : R*/
-		switch (_player->GetInfoPlayer().rgb_type)
+		switch (trap->GetRGBType())
 		{
 		case ERGBType::R:
-			_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
+			ObjectInteractSlowStart();
 			break;
 		case ERGBType::G:
 			ChanceJumpFeverTimingStart();
 			break;
 		case ERGBType::B:
-			_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+			ObjectInteractJumpStart();
 			break;
 		default:
 			break;
@@ -408,13 +408,13 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 		break;
 	case ERGBType::B:
 		/*Jump : R, Slow : G*/
-		switch (_player->GetInfoPlayer().rgb_type)
+		switch (trap->GetRGBType())
 		{
 		case ERGBType::R:
-			_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+			ObjectInteractJumpStart();
 			break;
 		case ERGBType::G:
-			_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
+			ObjectInteractSlowStart();
 			break;
 		case ERGBType::B:
 			ChanceJumpFeverTimingStart();
@@ -426,6 +426,9 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 		break;
 	case ERGBType::BLACK:
 		_player->PlayerAddSpeed(0.f);
+		break;
+	case ERGBType::WHITE:
+		PlayerChangeColor(trap->GetColor(), trap->GetRGBType());
 		break;
 	default:
 		break;
@@ -456,7 +459,7 @@ void AFA_GM::ChanceJumpFeverTimingStart()
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), _data_game_cache->GetChanceJumpFeverSlotRate());
 
 	//피버종료 타이머 시작
-	GetWorldTimerManager().SetTimer(_timer_TimerChanceJumpFeverFailed, this, &AFA_GM::TimerChanceJumpFeverFailed, _data_game_cache->GetChanceJumpFeverTiming() * _data_game_cache->GetChanceJumpFeverSlotRate(), false);
+	GetWorldTimerManager().SetTimer(_timer_interact_trap, this, &AFA_GM::TimerChanceJumpFeverFailed, _data_game_cache->GetChanceJumpFeverTiming() * _data_game_cache->GetChanceJumpFeverSlotRate(), false);
 
 	//UI
 	_pc->PCUIChanceJumpFever();
@@ -484,11 +487,36 @@ void AFA_GM::FeverSuccess()
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 
 	//피버종료타이머 취소
-	GetWorldTimerManager().PauseTimer(_timer_TimerChanceJumpFeverFailed);
+	GetWorldTimerManager().PauseTimer(_timer_interact_trap);
 
 	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpFeverAddSpeed(), _data_game_cache->GetChanceJumpFeverAddVelocityZ());
 
 	_manager_sfx->SFXStart(ESFXType::FEVER);
+}
+
+void AFA_GM::ObjectInteractJumpStart()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), _data_game_cache->GetChanceJumpFeverSlotRate());
+	GetWorldTimerManager().SetTimer(_timer_interact_trap, this, &AFA_GM::ObjectInteractJumpEnd, _data_game_cache->GetChanceJumpFeverTiming() * _data_game_cache->GetChanceJumpFeverSlotRate(), false);
+
+	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
+	_pc->PCUIInteract(EInteractType::JUMP);
+}
+void AFA_GM::ObjectInteractJumpEnd()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+}
+void AFA_GM::ObjectInteractSlowStart()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), _data_game_cache->GetChanceJumpFeverSlotRate());
+	GetWorldTimerManager().SetTimer(_timer_interact_trap, this, &AFA_GM::ObjectInteractSlowEnd, _data_game_cache->GetChanceJumpFeverTiming() * _data_game_cache->GetChanceJumpFeverSlotRate(), false);
+
+	_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
+	_pc->PCUIInteract(EInteractType::SLOW);
+}
+void AFA_GM::ObjectInteractSlowEnd()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 }
 
 void AFA_GM::SpawnGem(AFA_Plane* plane)

@@ -35,6 +35,7 @@ void UFA_UI_Main::UIMainChanceJumpFever()
 {
 	_fever->UIFeverInit();
 	_switcher->SetActiveWidgetIndex(3);
+	UIMainInteract(EInteractType::FEVER);
 }
 void UFA_UI_Main::UIMainFeverSuccess()
 {
@@ -43,6 +44,23 @@ void UFA_UI_Main::UIMainFeverSuccess()
 void UFA_UI_Main::UIMainFeverFailed()
 {
 	_switcher->SetActiveWidgetIndex(4);
+}
+void UFA_UI_Main::UIMainInteract(const EInteractType e_interact_type)
+{
+	switch (e_interact_type)
+	{
+	case EInteractType::FEVER:
+		PlayAnimation(_anim_fever);
+		break;
+	case EInteractType::JUMP:
+		PlayAnimation(_anim_jump);
+		break;
+	case EInteractType::SLOW:
+		PlayAnimation(_anim_slow);
+		break;
+	default:
+		break;
+	}
 }
 
 void UFA_UI_Main::UIMainShotStart()

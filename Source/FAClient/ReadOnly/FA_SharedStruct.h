@@ -53,6 +53,14 @@ enum class ERGBType : uint8
 };
 
 UENUM()
+enum class EInteractType : uint8
+{
+	FEVER,
+	JUMP,
+	SLOW,
+};
+
+UENUM()
 enum class EVFXType : uint8
 {
 	GEM,
