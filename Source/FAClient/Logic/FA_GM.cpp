@@ -110,6 +110,7 @@ void AFA_GM::GMInit()
 	_player_base_location = _player->GetActorLocation();
 	_pre_spawn_plane_loc_x = _player_base_location.X;
 	_player->GetInfoPlayer().power_count_current = _data_game_cache->GetPlayerPowerCountMax();
+	_player->GetInfoPlayer().max_velocity_z = _player_base_location.Z;
 
 	/*세이브파일 로드*/
 	GameLoad();
@@ -250,6 +251,7 @@ void AFA_GM::GameRestart()
 	_player->PlayerMovementSetActive(false);
 	_player->SetActorLocation(_player_base_location);
 	_player->GetInfoPlayer().power_count_current = _data_game_cache->GetPlayerPowerCountMax();
+	_player->GetInfoPlayer().max_velocity_z = _player_base_location.Z;
 	PlayerChangeColor(FLinearColor(FColor::FromHex("FFFFFFFF")), ERGBType::WHITE);
 
 	/*바닥 풀링*/
@@ -469,6 +471,8 @@ void AFA_GM::ChanceJumpFeverTimingStart()
 	//피버종료 타이머 시작
 	GetWorldTimerManager().SetTimer(_timer_interact_trap, this, &AFA_GM::TimerChanceJumpFeverFailed, _data_game_cache->GetChanceJumpFeverTiming() * _data_game_cache->GetChanceJumpFeverSlotRate(), false);
 
+	_manager_sfx->SFXStart(ESFXType::FEVER_TIMING);
+
 	//UI
 	_pc->PCUIChanceJumpFever();
 }
@@ -482,7 +486,9 @@ void AFA_GM::TimerChanceJumpFeverFailed()
 
 	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpAddSpeed(), _data_game_cache->GetChanceJumpAddVelocityZ());
 
-	_manager_sfx->SFXStart(ESFXType::JUMP);
+	_manager_sfx->SFXEnd(ESFXType::FEVER_TIMING);
+	//_manager_sfx->SFXStart(ESFXType::JUMP);
+	_manager_sfx->SFXStart(ESFXType::FEVER_FAILED);
 
 	_pc->PCFeverFailed();
 }
@@ -499,6 +505,7 @@ void AFA_GM::FeverSuccess()
 
 	_player->PlayerMovementJump(_data_game_cache->GetChanceJumpFeverAddSpeed(), _data_game_cache->GetChanceJumpFeverAddVelocityZ());
 
+	_manager_sfx->SFXEnd(ESFXType::FEVER_TIMING);
 	_manager_sfx->SFXStart(ESFXType::FEVER);
 }
 

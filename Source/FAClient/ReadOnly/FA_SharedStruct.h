@@ -73,6 +73,8 @@ enum class ESFXType : uint8
 	POWER,
 	JUMP,
 	FEVER,
+	FEVER_TIMING,
+	FEVER_FAILED,
 };
 
 USTRUCT(BlueprintType)
@@ -285,6 +287,10 @@ protected:
 		USoundBase* _jump = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
 		USoundBase* _fever = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+		USoundBase* _fever_timing = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+		USoundBase* _fever_failed = nullptr;
 
 public:
 	FORCEINLINE USoundBase* GetBackGround() { return _background; }
@@ -293,6 +299,8 @@ public:
 	FORCEINLINE USoundBase* GetPower() { return _power; }
 	FORCEINLINE USoundBase* GetJump() { return _jump; }
 	FORCEINLINE USoundBase* GetFever() { return _fever; }
+	FORCEINLINE USoundBase* GetFeverTiming() { return _fever_timing; }
+	FORCEINLINE USoundBase* GetFeverFailed() { return _fever_failed; }
 };
 
 

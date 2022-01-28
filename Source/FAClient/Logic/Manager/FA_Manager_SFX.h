@@ -20,7 +20,10 @@ public:
 	void SFXInit(UFA_GI* fagi);
 private:
 	FDataSFX* _data_sfx_cache = nullptr;
+	UPROPERTY()
+		UAudioComponent* _fever_timing_cache = nullptr;
 
 public:
 	void SFXStart(const ESFXType e_sfx_type);
+	void SFXEnd(const ESFXType e_sfx_type);
 };
