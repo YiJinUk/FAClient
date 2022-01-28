@@ -52,6 +52,8 @@ public:
 	void PCUIInteractEnd();
 
 	void PCUIObtainGem(const int32 i_gem);
+
+	void PCUIRibbonBuy(const FString& str_code_ribbon_buy, const int32 i_gem);
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
 		void PCBPInit();

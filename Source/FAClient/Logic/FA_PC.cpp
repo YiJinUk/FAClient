@@ -80,3 +80,8 @@ void AFA_PC::PCUIObtainGem(const int32 i_gem)
 {
 	_ui_main->UIMainObtainGem(i_gem);
 }
+
+void AFA_PC::PCUIRibbonBuy(const FString& str_code_ribbon_buy, const int32 i_gem)
+{
+	_ui_main->UIMainRibbonBuy(str_code_ribbon_buy, i_gem);
+}

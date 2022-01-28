@@ -24,10 +24,12 @@ public:
 public:
 	FDataPlane* FindDataPlaneByCode(const FString& str_code_plane);
 	FDataObject* FindDataObjectByCode(const FString& str_code_object);
+	FDataRibbon* FindDataRibbonByCode(const FString& str_code_ribbon);
 	FDataVFX* FindDataVFXByCode(const FString& str_code_vfx);
 	FDataSFX* FindDataSFXByCode(const FString& str_code_sfx);
 
 	FDataGame* GetDataGame();
+	TArray<FDataRibbon*>& GetDataRibbons();
 private:
 	UPROPERTY()
 		UDataTable* _dt_game = nullptr;
@@ -36,11 +38,14 @@ private:
 	UPROPERTY()
 		UDataTable* _dt_object = nullptr;
 	UPROPERTY()
+		UDataTable* _dt_ribbon = nullptr;
+	UPROPERTY()
 		UDataTable* _dt_vfx = nullptr;
 	UPROPERTY()
 		UDataTable* _dt_sfx = nullptr;
 
 	FDataGame* _data_game = nullptr;
+	TArray<FDataRibbon*> _data_ribbons;
 #pragma endregion
 
 #pragma region Math

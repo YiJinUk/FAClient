@@ -28,6 +28,8 @@ public:
 protected:
 	UPROPERTY(EditAnywhere)
 		class USphereComponent* _sphere_collision = nullptr;
+	UPROPERTY(EditAnywhere)
+		class UParticleSystemComponent* _ribbon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly) 
 		UProjectileMovementComponent* _projectile_movement = nullptr;
@@ -60,6 +62,7 @@ private:
 #pragma region Color
 public:
 	void PlayerSetColor(const FLinearColor& s_linear_color, const ERGBType e_rgb_type);
+	void PlayerSetRibbon(UParticleSystem* ps_ribbon);
 #pragma endregion
 
 #pragma region Stat

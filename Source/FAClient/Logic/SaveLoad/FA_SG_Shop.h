@@ -5,23 +5,19 @@
 #include "CoreMinimal.h"
 #include "ReadOnly/FA_SharedStruct.h"
 #include "GameFramework/SaveGame.h"
-#include "FA_SG_Game.generated.h"
+#include "FA_SG_Shop.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FACLIENT_API UFA_SG_Game : public USaveGame
+class FACLIENT_API UFA_SG_Shop : public USaveGame
 {
 	GENERATED_BODY()
 	
 public:
 	void SGSaveData(FInfoGame& s_info_game);
 public:
-	UPROPERTY()
-		int32 score_best = 0;
-	UPROPERTY()
-		int32 gem = 0;
 	UPROPERTY()
 		TArray<FString> code_ribbons;
 };

@@ -7,4 +7,5 @@ void UFA_SG_Game::SGSaveData(FInfoGame& s_info_game)
 {
 	score_best = s_info_game.score_best;
 	gem = s_info_game.gem;
+	code_ribbons = s_info_game.code_ribbons;
 }

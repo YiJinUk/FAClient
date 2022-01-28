@@ -75,21 +75,6 @@ void AFA_GM::GMInit()
 	_manager_vfx->VFXInit(_fagi);
 	_manager_sfx->SFXInit(_fagi);
 
-	///*오브젝트 생성확률 초기화*/
-	//for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbObstacles())
-	//{
-	//	for (int32 i = 0, i_len = s_data_obj_prob.GetObjectProb(); i < i_len; ++i)
-	//	{
-	//		_prob_obstacles.Add(s_data_obj_prob.GetCode());
-	//	}
-	//}
-	//for (const FDataObjectProb& s_data_obj_prob : _data_game_cache->GetProbChances())
-	//{
-	//	for (int32 i = 0, i_len = s_data_obj_prob.GetObjectProb(); i < i_len; ++i)
-	//	{
-	//		_prob_chances.Add(s_data_obj_prob.GetCode());
-	//	}
-	//}
 	/*오브젝트 RGB확률 초기화*/
 	for (int32 i = 0, i_len = _data_game_cache->GetObjectProbR(); i < i_len; ++i) _prob_rgb.Add(ERGBType::R);
 	for (int32 i = 0, i_len = _data_game_cache->GetObjectProbG(); i < i_len; ++i) _prob_rgb.Add(ERGBType::G);
@@ -112,8 +97,20 @@ void AFA_GM::GMInit()
 	_player->GetInfoPlayer().power_count_current = _data_game_cache->GetPlayerPowerCountMax();
 	_player->GetInfoPlayer().max_velocity_z = _player_base_location.Z;
 
+	///*아이템 초기화*/
+	//TArray<FDataRibbon*> arr_data_ribbon = _fagi->GetDataRibbons();
+	//for (FDataRibbon* s_data_ribbon : arr_data_ribbon)
+	//{
+	//	//FInfoRibbon s_info_ribbon;
+	//	//s_info_ribbon.code = s_data_ribbon->GetCode();
+	//	//s_info_ribbon.is_buy = false;
+	//	_info_game.code_ribbons.Add(s_data_ribbon->GetCode());
+	//}
+
 	/*세이브파일 로드*/
 	GameLoad();
+
+
 
 	/*SFX 초기화*/
 	_manager_sfx->SFXStart(ESFXType::BACKGROUND);
@@ -330,6 +327,13 @@ void AFA_GM::PlayerChangeColor(const FLinearColor& s_change_color, const ERGBTyp
 	default:
 		break;
 	}
+}
+void AFA_GM::PlayerChangeRibbonByCode(const FString& str_code_ribbon)
+{
+	FDataRibbon* s_data_ribbon = _fagi->FindDataRibbonByCode(str_code_ribbon);
+	if (!s_data_ribbon) return;
+
+	_player->PlayerSetRibbon(s_data_ribbon->GetRibbon());
 }
 
 void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap, const FLinearColor& s_linear_color)
@@ -645,6 +649,33 @@ void AFA_GM::PlaneInitLocation()
 	_plane_move_count = -1;
 }
 
+void AFA_GM::RibbonBuyByCode(const FString& str_code_ribbon)
+{
+	/*구매했는지*/
+	if (IsBuyRibbonByCode(str_code_ribbon)) return;
+
+	const FDataRibbon* s_data_ribbon = _fagi->FindDataRibbonByCode(str_code_ribbon);
+	if (!s_data_ribbon) return;
+	/*돈이 되는지*/
+	if (_info_game.gem < s_data_ribbon->GetPrice()) return;
+
+	/*구매성공*/
+
+	//돈 차감
+	_info_game.gem -= s_data_ribbon->GetPrice();
+
+	_info_game.code_ribbons.Add(str_code_ribbon);
+
+	GameSave();
+
+	_pc->PCUIRibbonBuy(str_code_ribbon, _info_game.gem);
+}
+bool AFA_GM::IsBuyRibbonByCode(const FString& str_code_ribbon_check)
+{
+	int32 i = 0;
+	return _info_game.code_ribbons.Find(str_code_ribbon_check, i);
+}
+
 void AFA_GM::GameSave()
 {
 	_manager_saveload->SaveStart(_info_game);
@@ -657,3 +688,4 @@ void AFA_GM::GameLoad()
 const int64 AFA_GM::IdGenerator() { return ++_id_generator; }
 
 void AFA_GM::SetPowerProgressMaterial(UMaterialInstanceDynamic* mid_power_progress) { _power_progress = mid_power_progress; }
+const FInfoGame& AFA_GM::GetInfoGame() { return _info_game; }

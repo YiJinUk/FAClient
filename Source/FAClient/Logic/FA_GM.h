@@ -79,6 +79,8 @@ private:
 public:
 	void GameRestart();
 	void GameOver();
+
+	const FInfoGame& GetInfoGame();
 private:
 	//플레이어캐릭터 위치의 X값 입니다
 	UPROPERTY()
@@ -165,6 +167,7 @@ public:
 		void ShotPlayer();
 	void PlayerPowerStart();
 	void PlayerChangeColor(const FLinearColor& s_change_color, const ERGBType e_rgb_type);
+	void PlayerChangeRibbonByCode(const FString& str_code_ribbon);
 
 	void SetPowerProgressMaterial(UMaterialInstanceDynamic* mid_power_progress);
 private:
@@ -182,6 +185,12 @@ private:
 		float _power_progress_value = 0.f;
 	UPROPERTY()
 		bool _is_add_power_value = true;
+#pragma endregion
+
+#pragma region Shop
+public:
+	void RibbonBuyByCode(const FString& str_code_ribbon);
+	bool IsBuyRibbonByCode(const FString& str_code_ribbon_check);
 #pragma endregion
 
 #pragma region SaveLoad

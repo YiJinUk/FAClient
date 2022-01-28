@@ -23,6 +23,7 @@ class FACLIENT_API UFA_UI_GamePlay : public UFA_UI_Master
 	
 public:
 	void UIGamePlayPostInit();
+
 private:
 	UPROPERTY(Meta = (BindWidget))
 		UButton* _power = nullptr;
@@ -30,12 +31,12 @@ private:
 		UTextBlock* _power_count = nullptr;
 	UPROPERTY(Meta = (BindWidget))
 		UTextBlock* _power_cost = nullptr;
+	
 
 	UPROPERTY()
 		UFA_GI* _fagi = nullptr;
 	UPROPERTY()
 		AFA_GM* _fagm = nullptr;
-
 public:
 	void UIGamePlayInit();
 

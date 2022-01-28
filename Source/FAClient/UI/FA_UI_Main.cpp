@@ -107,3 +107,9 @@ void UFA_UI_Main::UIMainObtainGem(const int32 i_gem)
 	PlayAnimation(_anim_obtain_gem);
 	_gem->SetText(FText::AsNumber(i_gem));
 }
+
+void UFA_UI_Main::UIMainRibbonBuy(const FString& str_code_ribbon_buy, const int32 i_gem)
+{
+	_gem->SetText(FText::AsNumber(i_gem));
+	_game_start->UIGameStartRibbonBuy(str_code_ribbon_buy);
+}

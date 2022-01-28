@@ -254,9 +254,31 @@ protected:
 		EObjectType _obj_type = EObjectType::NO;
 public:
 	FORCEINLINE const TSubclassOf<AFA_Object>& GetClassObject() const { return _class_object; }
-	FORCEINLINE const FString GetCode() const { return _code; }
+	FORCEINLINE const FString& GetCode() const { return _code; }
 	FORCEINLINE const bool GetIsObstacle() const { return _is_obstacle; }
 	FORCEINLINE const EObjectType GetObjectType() const { return _obj_type; }
+};
+
+USTRUCT(BlueprintType)
+struct FDataRibbon : public FTableRowBase
+{
+	GENERATED_BODY()
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
+		FString _code = "0";
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
+		UParticleSystem* _ribbon = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
+		UTexture2D* _portrait = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
+		int32 _price = 0;
+
+public:
+	FORCEINLINE const FString& GetCode() const { return _code; }
+	FORCEINLINE UParticleSystem* GetRibbon() { return _ribbon; }
+	FORCEINLINE UTexture2D* GetPortrait() { return _portrait; }
+	FORCEINLINE const int32 GetPrice() const { return _price; }
+
 };
 
 USTRUCT(BlueprintType)
@@ -303,6 +325,18 @@ public:
 	FORCEINLINE USoundBase* GetFeverFailed() { return _fever_failed; }
 };
 
+//USTRUCT(BlueprintType)
+//struct FInfoRibbon
+//{
+//	GENERATED_BODY()
+//
+//public:
+//	UPROPERTY()
+//		FString code = "0";
+//	UPROPERTY()
+//		bool is_buy = false;
+//};
+//
 
 
 USTRUCT(BlueprintType)
@@ -322,6 +356,9 @@ public:
 	//이번 게임에서 얻은 gem갯수 입니다
 	UPROPERTY()
 		int32 gem_add = 0;
+
+	UPROPERTY()
+		TArray<FString> code_ribbons;
 };
 
 USTRUCT(BlueprintType)

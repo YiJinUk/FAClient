@@ -9,6 +9,7 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AFA_Player::AFA_Player()
 {
@@ -19,6 +20,13 @@ AFA_Player::AFA_Player()
 	{
 		RootComponent = _sphere_collision;
 	}
+
+	_ribbon = CreateDefaultSubobject<UParticleSystemComponent>("_ribbon");
+	if (_ribbon)
+	{
+		_ribbon->SetupAttachment(GetRootComponent());
+	}
+	
 
 	_projectile_movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("_projectile_movement"));
 	_projectile_movement->bShouldBounce = true;
@@ -101,6 +109,10 @@ void AFA_Player::PlayerSetColor(const FLinearColor& s_linear_color, const ERGBTy
 {
 	_info_player.rgb_type = e_rgb_type;
 	_mid_color->SetVectorParameterValue("Color", s_linear_color);
+}
+void AFA_Player::PlayerSetRibbon(UParticleSystem* ps_ribbon)
+{
+	_ribbon->SetTemplate(ps_ribbon);
 }
 
 void AFA_Player::PlayerOnBounce(const FHitResult& s_hit, const FVector& v_velocity)

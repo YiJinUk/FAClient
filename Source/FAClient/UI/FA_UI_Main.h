@@ -88,4 +88,6 @@ public:
 
 	void UIMainSetScoreBest(const int32 i_score_best);
 	void UIMainObtainGem(const int32 i_gem);
+
+	void UIMainRibbonBuy(const FString& str_code_ribbon_buy, const int32 i_gem);
 };

@@ -3,6 +3,7 @@
 
 #include "Logic/Manager/FA_Manager_SaveLoad.h"
 #include "Logic/SaveLoad/FA_SG_Game.h"
+#include "Logic/SaveLoad/FA_SG_Shop.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -22,6 +23,7 @@ void AFA_Manager_SaveLoad::LoadStart(FInfoGame& s_info_game)
 	{
 		s_info_game.score_best = save_file_game->score_best;
 		s_info_game.gem = save_file_game->gem;
+		s_info_game.code_ribbons = save_file_game->code_ribbons;
 	}
 	else
 	{
@@ -31,5 +33,6 @@ void AFA_Manager_SaveLoad::LoadStart(FInfoGame& s_info_game)
 
 		s_info_game.score_best = 0;
 		s_info_game.gem = 100;
+		s_info_game.code_ribbons.Add("RB00001");
 	}
 }

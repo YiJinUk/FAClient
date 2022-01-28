@@ -14,7 +14,7 @@ void UFA_UI_GamePlay::UIGamePlayPostInit()
 	_fagi = GetWorld()->GetGameInstance<UFA_GI>();
 
 	_power_cost->SetText(FText::AsNumber(_fagi->GetDataGame()->GetPlayerPowerCost()));
-	_power_count->SetText(FText::AsNumber(_fagi->GetDataGame()->GetPlayerPowerCountMax()));
+	_power_count->SetText(FText::AsNumber(_fagi->GetDataGame()->GetPlayerPowerCountMax()));	
 
 	_power->OnClicked.AddDynamic(this, &UFA_UI_GamePlay::ClickedPower);
 }
