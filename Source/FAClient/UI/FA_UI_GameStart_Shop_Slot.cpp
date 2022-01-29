@@ -51,13 +51,18 @@ void UFA_UI_GameStart_Shop_Slot::SlotSetSelected(const bool b_is_selected)
 	}
 }
 
+void UFA_UI_GameStart_Shop_Slot::SlotEquiped()
+{
+	_fagm->PlayerChangeRibbonByCode(_code);
+	_switcher_background->SetActiveWidgetIndex(1);
+	_game_start->UIGameStartChangeSelectedSlot(this);
+}
+
 void UFA_UI_GameStart_Shop_Slot::ClickedBuy()
 {
 	if (_is_buy)
 	{
-		_fagm->PlayerChangeRibbonByCode(_code);
-		_switcher_background->SetActiveWidgetIndex(1);
-		_game_start->UIGameStartChangeSelectedSlot(this);
+		SlotEquiped();
 	}
 	else
 	{

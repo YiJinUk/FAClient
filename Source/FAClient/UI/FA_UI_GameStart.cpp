@@ -76,6 +76,7 @@ void UFA_UI_GameStart::UIGameStartRibbonBuy(const FString& str_code_ribbon_buy)
 		{
 			/**/
 			w_slot->SlotSetBuy(true);
+			w_slot->SlotEquiped();
 			_shop_slots_buy.Add(w_slot);
 			_shop_slots_not_buy.RemoveAt(i);
 			break;

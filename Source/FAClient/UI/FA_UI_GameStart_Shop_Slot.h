@@ -63,6 +63,8 @@ private:
 	UPROPERTY()
 		bool _is_buy = false;
 
+public:
+	void SlotEquiped();
 private:
 	UFUNCTION()
 		void ClickedBuy();
