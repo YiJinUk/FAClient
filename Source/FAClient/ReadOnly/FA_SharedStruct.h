@@ -75,6 +75,9 @@ enum class ESFXType : uint8
 	FEVER,
 	FEVER_TIMING,
 	FEVER_FAILED,
+
+	BUY_SUCCESS,
+	BUY_FAILED,
 };
 
 USTRUCT(BlueprintType)
@@ -314,6 +317,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
 		USoundBase* _fever_failed = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shop")
+		USoundBase* _buy_success = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shop")
+		USoundBase* _buy_failed = nullptr;
+
 public:
 	FORCEINLINE USoundBase* GetBackGround() { return _background; }
 
@@ -323,6 +331,9 @@ public:
 	FORCEINLINE USoundBase* GetFever() { return _fever; }
 	FORCEINLINE USoundBase* GetFeverTiming() { return _fever_timing; }
 	FORCEINLINE USoundBase* GetFeverFailed() { return _fever_failed; }
+
+	FORCEINLINE USoundBase* GetBuySuccess() { return _buy_success; }
+	FORCEINLINE USoundBase* GetBuyFailed() { return _buy_failed; }
 };
 
 //USTRUCT(BlueprintType)

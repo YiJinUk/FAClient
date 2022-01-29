@@ -27,10 +27,14 @@ void UFA_UI_GameStart::UIGameStartInit()
 	for (FDataRibbon* s_data_ribbon : fagi->GetDataRibbons())
 	{
 		UFA_UI_GameStart_Shop_Slot* w_slot = CreateWidgetShopSlot();
-		w_slot->SlotPostInit(s_data_ribbon);
+		w_slot->SlotPostInit(s_data_ribbon, this);
 		if (fagm->IsBuyRibbonByCode(s_data_ribbon->GetCode()))
 		{
 			w_slot->SlotSetBuy(true);
+			if (w_slot->GetCode() == "RB00001")
+			{
+				w_slot->SlotSetSelected(true);
+			}
 			_shop_slots_buy.Add(w_slot);
 		}
 		else
@@ -48,6 +52,17 @@ void UFA_UI_GameStart::UIGameStartInit()
 
 	fagm->SetPowerProgressMaterial(_power_progress->GetDynamicMaterial());
 
+}
+
+void UFA_UI_GameStart::UIGameStartChangeSelectedSlot(UFA_UI_GameStart_Shop_Slot* _selected_slot)
+{
+	if (_slot_selected)
+	{
+		_slot_selected->SlotSetSelected(false);
+	}
+
+	_slot_selected = _selected_slot;
+	_slot_selected->SlotSetSelected(true);
 }
 
 void UFA_UI_GameStart::UIGameStartRibbonBuy(const FString& str_code_ribbon_buy)

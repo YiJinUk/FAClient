@@ -91,26 +91,14 @@ void AFA_GM::GMInit()
 	}
 	PlaneInitLocation();
 
+	/*세이브파일 로드*/
+	GameLoad();
+
 	/*플레이어 초기화*/
 	_player_base_location = _player->GetActorLocation();
 	_pre_spawn_plane_loc_x = _player_base_location.X;
 	_player->GetInfoPlayer().power_count_current = _data_game_cache->GetPlayerPowerCountMax();
 	_player->GetInfoPlayer().max_velocity_z = _player_base_location.Z;
-
-	///*아이템 초기화*/
-	//TArray<FDataRibbon*> arr_data_ribbon = _fagi->GetDataRibbons();
-	//for (FDataRibbon* s_data_ribbon : arr_data_ribbon)
-	//{
-	//	//FInfoRibbon s_info_ribbon;
-	//	//s_info_ribbon.code = s_data_ribbon->GetCode();
-	//	//s_info_ribbon.is_buy = false;
-	//	_info_game.code_ribbons.Add(s_data_ribbon->GetCode());
-	//}
-
-	/*세이브파일 로드*/
-	GameLoad();
-
-
 
 	/*SFX 초기화*/
 	_manager_sfx->SFXStart(ESFXType::BACKGROUND);
@@ -657,9 +645,14 @@ void AFA_GM::RibbonBuyByCode(const FString& str_code_ribbon)
 	const FDataRibbon* s_data_ribbon = _fagi->FindDataRibbonByCode(str_code_ribbon);
 	if (!s_data_ribbon) return;
 	/*돈이 되는지*/
-	if (_info_game.gem < s_data_ribbon->GetPrice()) return;
+	if (_info_game.gem < s_data_ribbon->GetPrice())
+	{
+		_manager_sfx->SFXStart(ESFXType::BUY_FAILED);
+		return;
+	}
 
 	/*구매성공*/
+	_manager_sfx->SFXStart(ESFXType::BUY_SUCCESS);
 
 	//돈 차감
 	_info_game.gem -= s_data_ribbon->GetPrice();

@@ -41,6 +41,12 @@ void AFA_Manager_SFX::SFXStart(const ESFXType e_sfx_type)
 	case ESFXType::FEVER_FAILED:
 		UGameplayStatics::SpawnSound2D(GetWorld(), _data_sfx_cache->GetFeverFailed());
 		break;
+	case ESFXType::BUY_SUCCESS:
+		UGameplayStatics::SpawnSound2D(GetWorld(), _data_sfx_cache->GetBuySuccess());
+		break;
+	case ESFXType::BUY_FAILED:
+		UGameplayStatics::SpawnSound2D(GetWorld(), _data_sfx_cache->GetBuyFailed());
+		break;
 	default:
 		break;
 	}

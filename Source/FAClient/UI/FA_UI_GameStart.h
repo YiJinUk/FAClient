@@ -41,9 +41,12 @@ private:
 		TArray<UFA_UI_GameStart_Shop_Slot*> _shop_slots_buy;
 	UPROPERTY()
 		TArray<UFA_UI_GameStart_Shop_Slot*> _shop_slots_not_buy;
+	UPROPERTY()
+		UFA_UI_GameStart_Shop_Slot* _slot_selected = nullptr;
 
 public:
 	void UIGameStartRibbonBuy(const FString& str_code_ribbon_buy);
+	void UIGameStartChangeSelectedSlot(UFA_UI_GameStart_Shop_Slot* _selected_slot);
 private:
 	void SortShopSlot();
 
