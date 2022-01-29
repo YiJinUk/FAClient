@@ -34,6 +34,7 @@ void UFA_UI_GameStart::UIGameStartInit()
 			if (w_slot->GetCode() == "RB00001")
 			{
 				w_slot->SlotSetSelected(true);
+				_slot_selected = w_slot;
 			}
 			_shop_slots_buy.Add(w_slot);
 		}

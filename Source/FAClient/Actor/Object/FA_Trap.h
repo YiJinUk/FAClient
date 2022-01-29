@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actor/Object/Obstacle/FA_Obstacle.h"
+#include "Actor/Object/FA_Object.h"
 #include "FA_Trap.generated.h"
 
 class UMaterialInstanceDynamic;
@@ -12,7 +12,7 @@ class UMaterialInstanceDynamic;
  * 
  */
 UCLASS()
-class FACLIENT_API AFA_Trap : public AFA_Obstacle
+class FACLIENT_API AFA_Trap : public AFA_Object
 {
 	GENERATED_BODY()
 

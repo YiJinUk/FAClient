@@ -2,6 +2,7 @@
 
 
 #include "Logic/Manager/FA_Manager_SaveLoad.h"
+#include "Logic/FA_GI.h"
 #include "Logic/SaveLoad/FA_SG_Game.h"
 #include "Logic/SaveLoad/FA_SG_Shop.h"
 
@@ -28,11 +29,11 @@ void AFA_Manager_SaveLoad::LoadStart(FInfoGame& s_info_game)
 	else
 	{
 		///*세이브데이터를 불러오지 못했습니다 기본값으로 변경합니다*/
-		//USA_GI* sagi = GetWorld()->GetGameInstance<USA_GI>();
-		//const FDataGame* s_data_game = sagi->GetDataGame();
+		UFA_GI* fagi = GetWorld()->GetGameInstance<UFA_GI>();
+		const FDataGame* s_data_game = fagi->GetDataGame();
 
 		s_info_game.score_best = 0;
-		s_info_game.gem = 100;
+		s_info_game.gem = s_data_game->GetPlayerBaseGem();
 		s_info_game.code_ribbons.Add("RB00001");
 	}
 }

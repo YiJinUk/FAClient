@@ -4,7 +4,7 @@
 #include "Logic/Manager/FA_Manager_Pool.h"
 #include "Logic/FA_GI.h"
 #include "Actor/Object/FA_Plane.h"
-#include "Actor/Object/Obstacle/FA_Trap.h"
+#include "Actor/Object/FA_Trap.h"
 #include "Actor/Object/FA_Object.h"
 
 void AFA_Manager_Pool::PoolInit(UFA_GI* fagi)

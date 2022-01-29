@@ -32,17 +32,6 @@ enum class EGameStatus : uint8
 };
 
 UENUM()
-enum class EObjectType : uint8
-{
-	NO,
-	GEM,
-	TRAP,
-	WALL,
-	HOLE,
-	JUMP,
-};
-
-UENUM()
 enum class ERGBType : uint8
 {
 	R = 0,
@@ -81,25 +70,12 @@ enum class ESFXType : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FDataObjectProb
-{
-	GENERATED_BODY()
-protected:
-	UPROPERTY(EditAnywhere, Category = "General")
-		FString _code = "0";
-	UPROPERTY(EditAnywhere, Category = "General")
-		int32 _obj_prob = 0;
-
-public:
-	FORCEINLINE const FString& GetCode() const { return _code; }
-	FORCEINLINE const int32 GetObjectProb() const { return _obj_prob; }
-};
-
-USTRUCT(BlueprintType)
 struct FDataGame : public FTableRowBase
 {
 	GENERATED_BODY()
 protected:	
+	UPROPERTY(EditAnywhere, Category = "Player")
+		int32 _player_base_gem = 0;
 	UPROPERTY(EditAnywhere, Category = "Player")
 		float _player_gravity = 0.5f;
 	UPROPERTY(EditAnywhere, Category = "Player")
@@ -108,6 +84,7 @@ protected:
 		int32 _player_base_max_power = 10000;
 	UPROPERTY(EditAnywhere, Category = "Player")
 		int32 _player_camera_max_location_z = 0;
+
 
 	UPROPERTY(EditAnywhere, Category = "PlayerPower")
 		int32 _player_power_cost = 0;
@@ -142,16 +119,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "ObjectColor")
 		FLinearColor _object_color_black = FLinearColor();
 
-
-	UPROPERTY(EditAnywhere, Category = "ObjectProb")
-		int32 _object_prob_obstacle = 50;
-	UPROPERTY(EditAnywhere, Category = "ObjectProb")
-		int32 _object_prob_chance = 50;
-	UPROPERTY(EditAnywhere, Category = "ObjectProb")
-		TArray<FDataObjectProb> _prob_obstacles;
-	UPROPERTY(EditAnywhere, Category = "ObjectProb")
-		TArray<FDataObjectProb> _prob_chances;
-
 	UPROPERTY(EditAnywhere, Category = "Obstacle")
 		float _obstacle_trap_add_speed = 0.f;
 	UPROPERTY(EditAnywhere, Category = "Obstacle")
@@ -181,6 +148,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Gem")
 		int32 _gem_loc_z = 300;
 public:
+	FORCEINLINE const float GetPlayerBaseGem() const { return _player_base_gem; }
 	FORCEINLINE const float GetPlayerGravity() const { return _player_gravity; }
 	FORCEINLINE const FVector GetPlayerBaseAngle() const { return _player_base_angle; }
 	FORCEINLINE const int32 GetPlayerBaseMaxPower() const { return _player_base_max_power; }
@@ -203,16 +171,6 @@ public:
 	FORCEINLINE const FLinearColor GetObjectColorG() const { return _object_color_g; }
 	FORCEINLINE const FLinearColor GetObjectColorB() const { return _object_color_b; }
 	FORCEINLINE const FLinearColor GetObjectColorBlack() const { return _object_color_black; }
-
-	
-
-
-
-
-	FORCEINLINE const int32 GetObjectProbObstacle() const { return _object_prob_obstacle; }
-	FORCEINLINE const int32 GetObjectProbChance() const { return _object_prob_chance; }
-	FORCEINLINE const TArray<FDataObjectProb>& GetProbObstacles() const { return _prob_obstacles; }
-	FORCEINLINE const TArray<FDataObjectProb>& GetProbChances() const { return _prob_chances; }
 
 	FORCEINLINE const float GetObstacleTrapAddSpeed() const { return _obstacle_trap_add_speed; }
 	FORCEINLINE const float GetObstacleWallTapTiming() const { return _obstacle_wall_tap_timing; }
@@ -251,15 +209,9 @@ protected:
 		TSubclassOf<AFA_Object> _class_object;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
 		FString _code = "0";
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
-		bool _is_obstacle = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "General")
-		EObjectType _obj_type = EObjectType::NO;
 public:
 	FORCEINLINE const TSubclassOf<AFA_Object>& GetClassObject() const { return _class_object; }
 	FORCEINLINE const FString& GetCode() const { return _code; }
-	FORCEINLINE const bool GetIsObstacle() const { return _is_obstacle; }
-	FORCEINLINE const EObjectType GetObjectType() const { return _obj_type; }
 };
 
 USTRUCT(BlueprintType)
@@ -336,20 +288,6 @@ public:
 	FORCEINLINE USoundBase* GetBuyFailed() { return _buy_failed; }
 };
 
-//USTRUCT(BlueprintType)
-//struct FInfoRibbon
-//{
-//	GENERATED_BODY()
-//
-//public:
-//	UPROPERTY()
-//		FString code = "0";
-//	UPROPERTY()
-//		bool is_buy = false;
-//};
-//
-
-
 USTRUCT(BlueprintType)
 struct FInfoGame
 {
@@ -396,6 +334,4 @@ public:
 		int64 id = 0;
 	UPROPERTY()
 		FString code = "0";
-	UPROPERTY()
-		EObjectType obj_type = EObjectType::NO;
 };

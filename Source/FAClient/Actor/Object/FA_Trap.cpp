@@ -1,11 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actor/Object/Obstacle/FA_Trap.h"
+#include "Actor/Object/FA_Trap.h"
 #include "Actor/Player/FA_Player.h"
 #include "Logic/FA_GM.h"
 
-//#include "Materials/MaterialInstanceDynamic.h"
 #include "Components/BoxComponent.h"
 
 AFA_Trap::AFA_Trap()

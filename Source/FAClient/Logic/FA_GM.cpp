@@ -11,7 +11,7 @@
 #include "Manager/FA_Manager_VFX.h"
 #include "Actor/Player/FA_Player.h"
 #include "Actor/Object/FA_Plane.h"
-#include "Actor/Object/Obstacle/FA_Trap.h"
+#include "Actor/Object/FA_Trap.h"
 #include "Actor/Object/FA_Object.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -323,41 +323,6 @@ void AFA_GM::PlayerChangeRibbonByCode(const FString& str_code_ribbon)
 
 	_player->PlayerSetRibbon(s_data_ribbon->GetRibbon());
 }
-
-void AFA_GM::ObjectOverlap(AFA_Object* obj_overlap, const FLinearColor& s_linear_color)
-{
-	if (!obj_overlap) return;
-
-	switch (obj_overlap->GetInfoObject().obj_type)
-	{
-	case EObjectType::TRAP:
-		_player->PlayerMovementJump(_data_game_cache->GetObstacleTrapAddSpeed(), _data_game_cache->GetObstacleTrapAddSpeed());
-		//_player->PlayerSetColor(s_linear_color);
-		break;
-	case EObjectType::WALL:
-		//ObstacleWallTapTimingStart();
-		break;
-	case EObjectType::HOLE:
-		_player->PlayerAddSpeed(0.f);
-		break;
-	case EObjectType::JUMP:
-		ChanceJumpFeverTimingStart();
-		break;
-	case EObjectType::GEM:
-		_manager_vfx->VFXStart(EVFXType::GEM, obj_overlap->GetActorLocation());
-		_manager_sfx->SFXStart(ESFXType::GEM);
-
-		obj_overlap->SetActorLocation(FVector(-1000.f, 0.f, -1000.f));
-
-		_info_game.gem += 1;
-		_info_game.gem_add += 1;
-
-		_pc->PCUIObtainGem(_info_game.gem);
-		break;
-	default:
-		break;
-	}
-}
 void AFA_GM::TrapOverlap(AFA_Trap* trap)
 {
 	if (!trap) return;
@@ -435,6 +400,20 @@ void AFA_GM::TrapOverlap(AFA_Trap* trap)
 	default:
 		break;
 	}
+}
+void AFA_GM::GemOverlap(AFA_Object* gem)
+{
+	if (!gem) return;
+
+	_manager_vfx->VFXStart(EVFXType::GEM, gem->GetActorLocation());
+	_manager_sfx->SFXStart(ESFXType::GEM);
+
+	gem->SetActorLocation(FVector(-1000.f, 0.f, -1000.f));
+
+	_info_game.gem += 1;
+	_info_game.gem_add += 1;
+
+	_pc->PCUIObtainGem(_info_game.gem);
 }
 
 void AFA_GM::ObstacleWallTapTimingStart()

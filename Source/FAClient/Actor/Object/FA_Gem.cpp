@@ -31,7 +31,7 @@ AFA_Gem::AFA_Gem()
 
 void AFA_Gem::OnBoxOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	_fagm->ObjectOverlap(this);
+	_fagm->GemOverlap(this);
 }
 
 void AFA_Gem::ObjectSetPoolActiveChild(const bool b_is_active)

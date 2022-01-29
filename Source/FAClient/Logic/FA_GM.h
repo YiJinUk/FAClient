@@ -107,6 +107,7 @@ private:
 public:
 	void ObjectOverlap(AFA_Object* obj_overlap, const FLinearColor& s_linear_color = FLinearColor());
 	void TrapOverlap(AFA_Trap* trap);
+	void GemOverlap(AFA_Object* gem);
 
 private:
 	const FString CalcSpawnObjectCode();
